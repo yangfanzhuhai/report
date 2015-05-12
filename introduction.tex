@@ -1,0 +1,11 @@
+\chapter{Introduction}
+
+The London bus network carries 2.4 billion passengers a year, more than the rest of England combined \cite{tfl_annual_report_13/14}. 
+
+\par The bus arrival times published by Transport for London (TfL) are currently widely available on digital live bus arrivals signs at more than 2,500 bus stops \cite{live_bus_arrivals}. Passengers can also check this information by sending a text message with the bus stop code, as well as doing a quick search online or on mobile applications. 
+
+\par Passengers rely on the bus arrival times to plan their journey, by factoring in the waiting time when choosing the buses to take. Current London journey planning software takes the journey start time, start location, and destination as input, and recommends routes consisting of a variety of travel mode, with an estimate travel time for each suggested journey. Such popular planners include Google maps \cite{google_maps}, Citymapper \cite{citymapper} and Transport for London Journey Planner \cite{tfl_journey_planner}.
+
+\par However, the accuracy of the bus arrival times published is affected by many external factors. For example, when there is heavy traffic, the buses are likely to be delayed by a difference significant enough for a change in passengers' route picking. Yet, this delay information is not reflected in the arrival time data or the estimated journey time early enough for the passengers to make a decision to choose an alternate route. As a result, passengers waste time waiting for buses that come much later than expected, or chosing to board a bus that takes far longer than the estimated journey time. Although the average bus delay is 1 minute, there was a 16.6 chance of waiting for more than 10 minutes \cite{buses_performance_data}.
+
+\par This can be avoided if passengers are informed of the delays in bus arrival times in advance. Such delays can predicted by analysing the historical delays. This is achieved by collecting data from the TfL live bus arrivals API stream feed, and estimate the average journey time required between two locations on a given time of the day. Next, a bus arrival time table with delays during various time windows over a week can be crafted and fine tuned incrementally. This timetable is the reference point for sending out delay warnings.

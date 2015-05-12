@@ -1,0 +1,82 @@
+\chapter{Project Plan}
+
+\section{Project Objectives}
+This project aims to produce a tool that notifies users of delays of the London buses they are waiting for, so that they can choose alternate routes and save waiting time.
+
+\begin{description}
+	\item[Back-end]  A timetable of bus journey times with an interface that supports real time query.
+    \item[Front-end] A mobile application that allows users to check bus arrivals times with delay information at a give time and location. 
+\end{description}
+
+\subsection{Core Features}
+    \begin{enumerate}
+        \item Given user current location, query for predicted bus arrivals at the nearest bus stop.
+ 		\item Give user current location and destination, query for routes and suggest bus routes with delays taken into consideration.
+        \item Given starting location, destination, desired departure / arrival time, suggest bus routes with delays taken into consideration.
+    \end{enumerate}
+
+\subsection{Optional Extensions}
+    \begin{enumerate}
+    	\item Optimise prediction accuracy 
+        	\begin{itemize}
+            	\item Analyse the average bus journey time for given starting and end stops to remove outliers. 
+                \item Integrate iBus actual arrivals data to improve arrivals timetable precision.
+            \end{itemize}
+        \item Include other modes of transportation for alternate route recommendation.
+        \item Gather more user feedback on mobile application and improve accordingly .
+        \item Publish mobile application on android market.
+    \end{enumerate}
+
+\section{Current Progress}
+\begin{enumerate}
+  \item Obtained access to TFL Live bus arrival API stream.
+  \item Designed databases schema.
+  \item Setup databases to store bus arrival data.
+  \item Setup remote server to run daemon process to pull data from live bus arrivals feed and store data into the database.
+  \item Collected 2 weeks of bus arrivals data for analysis.
+  \item Created sample bus arrivals timetable for a chosen pair of neighbouring bus stops (10002 - 11469).
+\end{enumerate}
+
+\section{Development Plan}
+\begin{description}
+	\item \textbf{Spring Term Week 4} 
+    \begin{itemize}
+    	\item Optimise arrivals table for fast query (e.g. via proper indexing).
+		\item Create bus journey timetables with delay for all pairs of neighbouring bus stops.
+    \end{itemize}
+    \item \textbf{Spring Term Week 5}
+    Develop journey planning feature with given start and end stops
+    \item \textbf{Milestone 1 - Spring Term Week 6} 
+    Design query to request journey time from bus stop A to bus stop B at a given time of the day.
+
+	\item \textbf{Spring Term Week 7} 
+    \begin{itemize}
+    	\item Develop back-end API to receive query from mobile application. 
+    	\item Start initial mobile interface design.
+    \end{itemize}
+	\item \textbf{Spring Term Week 8} 
+	Design mobile application interface to extract user current location, and identify the nearest bus stop.
+    \item \textbf{Milestone 2 - Spring Term Week 9} 
+    Connect mobile application to send query to the back-end to request for bus arrival times for all routes reaching ther nearest bus stop. 
+    \item \textbf{Spring Term Week 10}
+    Improve mobile application user interface (gain user feedback and improve incrementally).
+	\item \textbf{Fall-back Point - Easter Break} 
+    \begin{itemize}
+    	\item Implement mobile interfaces to get journey destination for journey planning. 
+        \item Display suggested journey routes and travel time for a give time. 
+    	\item Optimise delay predictions by filtering out anomalies in average journey time calculation
+    	\item Evaluate performance by comparing with iBus data
+    \end{itemize}
+    \item \textbf{Milestone 3 - Summer Term Week 1 - 3} Implement extensions and start writing report.
+	\item \textbf{Summer Term Week 4} Report first draft.
+    \item \textbf{Summer Term Week 5} Report second draft.
+    \item \textbf{Summer Term Week 6} Presentation first draft.
+    \item \textbf{Summer Term Week 7} Presentation second draft.
+    \item \textbf{Summer Term Week 8}
+    	\begin{itemize}
+        	\item \textbf{Tuesday, 16th June 4pm} Final report due.
+    		\item Presentation practice.
+        \end{itemize}
+    \item \textbf{Summer Term Week 9, Monday 22nd and Tuesday 23rd June} Presentation days.
+    \item \textbf{Summer Term Week 10, Monday 29th June} Final Archive due.
+\end{description}
