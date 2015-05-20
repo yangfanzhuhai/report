@@ -1,3 +1,4 @@
+%!TEX root = report.tex
 \chapter{Project Plan}
 
 \section{Project Objectives}
@@ -5,7 +6,7 @@ This project aims to produce a tool that notifies users of delays of the London 
 
 \begin{description}
 	\item[Back-end]  A timetable of bus journey times with an interface that supports real time query.
-    \item[Front-end] A mobile application that allows users to check bus arrivals times with delay information at a give time and location. 
+    \item[Front-end] A mobile application that allows users to check bus arrivals times with delay information at a give time and location.
 \end{description}
 
 \subsection{Core Features}
@@ -17,9 +18,9 @@ This project aims to produce a tool that notifies users of delays of the London 
 
 \subsection{Optional Extensions}
     \begin{enumerate}
-    	\item Optimise prediction accuracy 
+    	\item Optimise prediction accuracy
         	\begin{itemize}
-            	\item Analyse the average bus journey time for given starting and end stops to remove outliers. 
+            	\item Analyse the average bus journey time for given starting and end stops to remove outliers.
                 \item Integrate iBus actual arrivals data to improve arrivals timetable precision.
             \end{itemize}
         \item Include other modes of transportation for alternate route recommendation.
@@ -39,31 +40,31 @@ This project aims to produce a tool that notifies users of delays of the London 
 
 \section{Development Plan}
 \begin{description}
-	\item \textbf{Spring Term Week 4} 
+	\item \textbf{Spring Term Week 4}
     \begin{itemize}
     	\item Optimise arrivals table for fast query (e.g. via proper indexing).
 		\item Create bus journey timetables with delay for all pairs of neighbouring bus stops.
     \end{itemize}
     \item \textbf{Spring Term Week 5}
     Develop journey planning feature with given start and end stops
-    \item \textbf{Milestone 1 - Spring Term Week 6} 
+    \item \textbf{Milestone 1 - Spring Term Week 6}
     Design query to request journey time from bus stop A to bus stop B at a given time of the day.
 
-	\item \textbf{Spring Term Week 7} 
+	\item \textbf{Spring Term Week 7}
     \begin{itemize}
-    	\item Develop back-end API to receive query from mobile application. 
+    	\item Develop back-end API to receive query from mobile application.
     	\item Start initial mobile interface design.
     \end{itemize}
-	\item \textbf{Spring Term Week 8} 
+	\item \textbf{Spring Term Week 8}
 	Design mobile application interface to extract user current location, and identify the nearest bus stop.
-    \item \textbf{Milestone 2 - Spring Term Week 9} 
-    Connect mobile application to send query to the back-end to request for bus arrival times for all routes reaching ther nearest bus stop. 
+    \item \textbf{Milestone 2 - Spring Term Week 9}
+    Connect mobile application to send query to the back-end to request for bus arrival times for all routes reaching ther nearest bus stop.
     \item \textbf{Spring Term Week 10}
     Improve mobile application user interface (gain user feedback and improve incrementally).
-	\item \textbf{Fall-back Point - Easter Break} 
+	\item \textbf{Fall-back Point - Easter Break}
     \begin{itemize}
-    	\item Implement mobile interfaces to get journey destination for journey planning. 
-        \item Display suggested journey routes and travel time for a give time. 
+    	\item Implement mobile interfaces to get journey destination for journey planning.
+        \item Display suggested journey routes and travel time for a give time.
     	\item Optimise delay predictions by filtering out anomalies in average journey time calculation
     	\item Evaluate performance by comparing with iBus data
     \end{itemize}
