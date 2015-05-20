@@ -17,31 +17,4 @@ The TransXchange model has seven basic concepts\cite{transxchange_schema_guide}:
 relative times between each stop.
   \item \textit{VehicleJourney} specifies the list of stops at specific absolute passing times.
 \end{enumerate}
-<<<<<<< Updated upstream
-\todo[inline]{Need more detailed explanation. Walk through an example with xml code}
-\par Each xml file contains bus schedule information for a route. For each day of the week, there are predefined number of VehicleJourneys running the give route throughout the day. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieve the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
 
-The above computation was performed on each xml file to generate the actual arrival time and travel time for each vehicle trip at each stop in the route throughout the day. The results of this computation was stored in the delay\_tfl\_timetable table(Table \ref{table:delay_tfl_timetable}).
-
-\begin{table}
-\centering
-\begin{tabular}{@{}llp{6cm}@{}} \toprule
-Column Name & Type & Comments\\ \midrule
-id(Primary Key) & int(11)  & Auto Increment\\ [0.4cm]
-route & varchar(64) & The bus route \\ [0.4cm]
-day & varchar(32) & The day of week for the vehicle journey \\ [0.4cm]
-run & int(11) & The route direction \\ [0.4cm]
-sequence & int (11) & The sequence of the bus stop in the route \\ [0.4cm]
-stop\_name & varchar(64) & The name of the bus stop \\ [0.4cm]
-naptan\_atco & varchar(64) & The national identifier of the bus stop \\ [0.4cm]
-arrival\_time & datetime(6) & The expected arrival time for the given vehicle at the current bus stop \\ [0.4cm]
-travel\_time & int(11) & The travel time in seconds from the previous stop in the route to the current stop \\ [0.4cm]
-cumulative\_travel\_time & int(11) & The travel time  in seconds from the terminal to the current stop \\ [0.4cm]
-departure\_time\_from\_origin & datetime(6) & The departure time of the given vehicle from the terminal \\
-\bottomrule
-\end{tabular}
-\caption{delay\_tfl\_timetable Table Schema}
-\label{table:delay_tfl_timetable}
-\end{table}
-=======
->>>>>>> Stashed changes
