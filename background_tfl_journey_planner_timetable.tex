@@ -17,6 +17,7 @@ The TransXchange model has seven basic concepts\cite{transxchange_schema_guide}:
 relative times between each stop.
   \item \textit{VehicleJourney} specifies the list of stops at specific absolute passing times.
 \end{enumerate}
+<<<<<<< Updated upstream
 \todo[inline]{Need more detailed explanation. Walk through an example with xml code}
 \par Each xml file contains bus schedule information for a route. For each day of the week, there are predefined number of VehicleJourneys running the give route throughout the day. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieve the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
 
@@ -42,3 +43,5 @@ departure\_time\_from\_origin & datetime(6) & The departure time of the given ve
 \caption{delay\_tfl\_timetable Table Schema}
 \label{table:delay_tfl_timetable}
 \end{table}
+=======
+>>>>>>> Stashed changes

@@ -1,0 +1,20 @@
+%!TEX root = report.tex
+\chapter{Concept Design}
+\section{Overview}
+\par TFL releases average travel time between stops. However, this data is too general and sometimes not accurate.
+
+\par The general idea to predict delays is that the average travel time between 2 stops depends mainly on the day of the week and the hour.
+
+\section{Historical Timetable}
+\par We collect historical bus arrival tiems, and culculate the average travel time between 2 neighbouring bus stops by all routes, on given day and hour
+
+\section{Current Timetable}
+\par We collect the past 1 hour of bus arrival times, and calculate the average travel time between neighbouring bus stops.
+
+\section{Reference Timtable}
+\par Get the official average travel time from journey planner timetable
+
+\section{Assumption}
+\par The historical timetable should converge to reference timetable.
+
+\par When the current timetable is very different from reference timetable, there's delay.
