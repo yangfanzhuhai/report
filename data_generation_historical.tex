@@ -21,6 +21,7 @@ MySQL
   \item resulting table name and schema
 \end{itemize}
 
+\subsection{Collecting Bus Arrival Times}
 
 \subsubsection{Parameters supplied}
 \begin{itemize}
@@ -57,7 +58,7 @@ recorded\_time & timestamp & Current Timestamp \\ \bottomrule
 \subsubsection{Assumption}
 We assume that the actual bus arrival time is the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
 
-\section{bus locations}
+\section{Neighbouring Stops}
 
 We imported the bus sequences into the delay\_bus\_sequences table (Table \ref{table:delay_bus_sequences})
 
@@ -106,7 +107,7 @@ id & route & start\_stop & end\_stop \\ \midrule
 \label{table:sample_neighbours_view}
 \end{table}
 
-\subsubsection{Finding the average travel time between neighbouring stops}
+\subsection{Finding the average travel time between neighbouring stops}
 \todo[inline] {update this part}
 \par To experiment with the queries, we selected one pair of the neighbouring stops (10002, 11469), and listed the time required to travel from stop 10002 to stop 11469 by finding the difference in arrival times for each journey. Sample entries of this list is shown in Figure \ref{fig:journey_time_10002}.
 
@@ -116,10 +117,9 @@ id & route & start\_stop & end\_stop \\ \midrule
 \caption{\label{fig:journey_time_10002} List of journey time from stop 10002 to stop 11469}
 \end{figure}
 
-
 \par We then calculated the average journey time required to travel from 10002 to 11469 for each hour in each week of the day. This information is stored as a timetable, which would be used for further analysis.
 
-Figure\ref{fig:timetable_10002} shows the timetable generated. Each cell indicates the average journey time required to travel from stop 10002 to stop 11469 at a give hour of a give week of day. The \textbf{NULL} values are due to a current databases performance issue. This will be resolved later.
+\par Figure\ref{fig:timetable_10002} shows the timetable generated. Each cell indicates the average journey time required to travel from stop 10002 to stop 11469 at a give hour of a give week of day. The \textbf{NULL} values are due to a current databases performance issue. This will be resolved later.
 
 \begin{figure}
 \centering
@@ -129,10 +129,45 @@ Figure\ref{fig:timetable_10002} shows the timetable generated. Each cell indicat
 
 \par We plan to construct a timetable this way for each pair of the neighbouring bus stop.
 
+\subsection{Filtering out the negative travel times}
+\par In the travel\_time\_log generated, there were trips between two neighbouring stops with negative travel times, such as the entry shown in Table \ref{table:travel_time_log_negative}.
+
+\begin{table}
+\centering
+\begin{tabular}{@{}lllllr@{}} \toprule
+Start Stop & End Stop & Route & Start Time & End Time & Travel Time(sec) \\ \midrule
+9326 & 15552 & W13 & 14:53:18 & 14:52:14 & -64 \\ [0.4cm]
+\bottomrule
+\end{tabular}
+\caption{Travel Time Log Entry with Negative Travel Time}
+\label{table:travel_time_log_negative}
+\end{table}
+
+\par This was because when we performed the join of the arrivals table, there was a more recent update on the arrival times for the start stop, whereas the arrival times of end stop had not been updated. In Table \ref{table:negative_travel_time_explained}, we observed that the Recorded Time for the end stop 9326 was more recent than that of the end stop. As a result, the arrival time for the end stop was earlier than the start stop, causing the travel time to be negative.
+
+\begin{table}
+\centering
+\begin{tabular}{@{}lllllr@{}} \toprule
+Stop Code & Route & Vehicle ID & Trip ID & Arrival Time & Recorded Time\\ \midrule
+9326 & W13 & 18685 & 135229 &  14:53:18 & 14:48:25 \\ [0.4cm]
+15552 & W13 & 18685 & 135229 & 14:52:14 & 14:44:02 \\ [0.4cm]
+\bottomrule
+\end{tabular}
+\caption{Arrivals Entries to Explain Negative Travel Time}
+\label{table:negative_travel_time_explained}
+\end{table}
+
+\par We filtered out these negative values before calculating the average travel time between neighbouring stops.
 
 
-\subsection{Generating Reference Timetable}
-\subsubsection{Journey Planner Bus Timetables}
+
+
+
+
+
+
+\section{Generating Reference Timetable}
+\subsection{Journey Planner Bus Timetables}
 \todo[inline]{Need more detailed explanation. Walk through an example with xml code}
 \par Each xml file contains bus schedule information for a route. For each day of the week, there are predefined number of VehicleJourneys running the give route throughout the day. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieve the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
 

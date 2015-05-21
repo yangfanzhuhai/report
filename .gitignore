@@ -24,3 +24,4 @@
 do
 *.fdb_latexmk
 *.tdo
+*.sh
