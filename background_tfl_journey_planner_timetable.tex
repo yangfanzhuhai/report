@@ -1,11 +1,11 @@
 %!TEX root = report.tex
 \subsection{Journey Planner Bus Timetables}
-In order to calculate the delays in bus arrival times, we need the official bus travel times between stops for reference. This data was extracted from the Journey Planner Bus Timetables\cite{open_data_feeds_description} as part of the TFL Open Data. The timetables contians information on bus schedules including stops, routes, departures times, departure frequencies, operational notes, as well as the days on which the services run.
+In order to calculate the delays in bus arrival times, we need the official bus travel times between stops for reference. This data was extracted from the Journey Planner Bus Timetables\cite{open_data_feeds_description} as part of the \acrshort{tfl} Open Data. The timetables contians information on bus schedules including stops, routes, departures times, departure frequencies, operational notes, as well as the days on which the services run.
 
-The timetables uses the XML Schema Language\cite{xml} format, with the schema defined in TransXChange\cite{transxchange}, the UK nationwide standard for exchanging bus schedules and related data. We used the General schema version 2.1\cite{transxchange_downloads_and_schema}\cite{transxchange_schema_2.1_xsd} for this project.
+The timetables uses the \acrfull{xml} \cite{xml} format, with the schema defined in \gls{transxchange} \cite{transxchange}, the UK nationwide standard for exchanging bus schedules and related data. We used the General schema version 2.1\cite{transxchange_downloads_and_schema}\cite{transxchange_schema_2.1_xsd} for this project.
 
 \subsubsection{Data Structure}
-The TransXchange model has seven basic concepts\cite{transxchange_schema_guide}:
+The \gls{transxchange} model has seven basic concepts\cite{transxchange_schema_guide}:
 \todo[inline]{insert definitions here}
 \begin{enumerate}
   \item \textit{Service},

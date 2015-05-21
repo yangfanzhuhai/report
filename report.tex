@@ -24,9 +24,13 @@
 \usepackage[pdftex]{graphicx} %for embedding images
 \usepackage{url} %for proper url entries
 \usepackage{booktabs}
+\usepackage[acronym, toc]{glossaries}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[bookmarks, colorlinks=false, pdfborder={0 0 0}, pdftitle={<MEng Individual Project Interim Report>}, pdfauthor={<Yangfan Zhang>}, pdfsubject={<Computing>}, pdfkeywords={<TFL, Bus Arrival Times, Delay>}]{hyperref} %for creating links in the pdf version and other additional pdf attributes, no effect on the printed document
 %\usepackage[final]{pdfpages} %for embedding another pdf, remove if not required
+
+\makeglossaries
+\input{glossary.tex}
 
 \begin{document}
 \renewcommand\bibname{References} %Renames "Bibliography" to "References" on ref page
@@ -35,12 +39,9 @@
 \input{./title.tex}
 \input{./abstract.tex}
 \input{./acknow.tex}
-
 \pagenumbering{roman} %numbering before main content starts
 \tableofcontents
 % \listoffigures
-
-\listoftodos
 
 \newpage
 \pagenumbering{arabic} %reset numbering to normal for the main content
@@ -58,12 +59,15 @@
 \input{./concept_design.tex}
 \input{./data_generation_historical}
 \input{./serving_data.tex}
+\input{./frontend.tex}
 \input{./technical_details.tex}
 % \input{./project-plan.tex}
 \input{./evaluation-plan.tex}
 \input{./future-work.tex}
 \input{./conclusion.tex}
-\input{./glossary.tex}
-\input{./ref.tex}
 
+\printglossary[type=\acronymtype]
+\printglossary
+% \input{./glossary.tex}
+\input{./ref.tex}
 \end{document}
