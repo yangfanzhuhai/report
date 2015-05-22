@@ -22,8 +22,12 @@ MySQL
 \end{itemize}
 
 \subsection{Collecting Bus Arrival Times}
+\label{sec:collecting_arrival_times}
 
-\subsubsection{Parameters supplied}
+\par We collect bus arrival data for analysis from the live bus arrivals API. The base URL used in this project was \url{http://countdown.api.tfl.gov.uk/interfaces/ura/stream_V1}.
+
+\par We supplied the following parameters which specify the fields returned by the \acrshort{api}.
+
 \begin{itemize}
   \item \textit{StopID} This is the alphanumeric identifier of a bus stop. It is also known as stop\_code\_lbsl.
   \item \textit{LineName} This is the route number that is displayed on the front of the bus on any publicity advertising the route.
@@ -33,7 +37,7 @@ MySQL
   \item \textit{ExpireTime} This is the time at which the corresponding prediction is no longer valid and should stop being displayed.
 \end{itemize}
 
-\par The resulting URL is \sloppy \url{http://countdown.api.tfl.gov.uk/interfaces/ura/stream_V1?ReturnList=StopID,LineName,VehicleID,TripID,EstimatedTime,ExpireTime}.
+\par The resulting query URL is \sloppy \url{http://countdown.api.tfl.gov.uk/interfaces/ura/stream_V1?ReturnList=StopID,LineName,VehicleID,TripID,EstimatedTime,ExpireTime}.
 
 \par Each data entry contains an estimated arrival time for each bus journey at a given bus stop. This estimated arrival time is stored in the database via an UPDATE statement, which ensures that only the latest estimated arrival times per journey per bus stop are stored. To avoid having data being overwritten, only the entries that have been changed in the recent 10 minutes can be updated. This has been achieved through running a daemon process written in python on a virtual host. Table \ref{table:delay_arrivals_schema} shows the schema for arrivals table.
 
@@ -58,8 +62,8 @@ recorded\_time & timestamp & Current Timestamp \\ \bottomrule
 \subsubsection{Assumption}
 We assume that the actual bus arrival time is the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
 
-\section{Neighbouring Stops}
-
+\subsection{Neighbouring Stops}
+\label{sec:bus_stop_locations_routes}
 We imported the bus sequences into the delay\_bus\_sequences table (Table \ref{table:delay_bus_sequences})
 
 \begin{table}
@@ -136,8 +140,7 @@ id & route & start\_stop & end\_stop \\ \midrule
 \centering
 \begin{tabular}{@{}lllllr@{}} \toprule
 Start Stop & End Stop & Route & Start Time & End Time & Travel Time(sec) \\ \midrule
-9326 & 15552 & W13 & 14:53:18 & 14:52:14 & -64 \\ [0.4cm]
-\bottomrule
+9326 & 15552 & W13 & 14:53:18 & 14:52:14 & -64 \\ \bottomrule
 \end{tabular}
 \caption{Travel Time Log Entry with Negative Travel Time}
 \label{table:travel_time_log_negative}
@@ -150,8 +153,7 @@ Start Stop & End Stop & Route & Start Time & End Time & Travel Time(sec) \\ \mid
 \begin{tabular}{@{}lllllr@{}} \toprule
 Stop Code & Route & Vehicle ID & Trip ID & Arrival Time & Recorded Time\\ \midrule
 9326 & W13 & 18685 & 135229 &  14:53:18 & 14:48:25 \\ [0.4cm]
-15552 & W13 & 18685 & 135229 & 14:52:14 & 14:44:02 \\ [0.4cm]
-\bottomrule
+15552 & W13 & 18685 & 135229 & 14:52:14 & 14:44:02 \\ \bottomrule
 \end{tabular}
 \caption{Arrivals Entries to Explain Negative Travel Time}
 \label{table:negative_travel_time_explained}
@@ -159,16 +161,13 @@ Stop Code & Route & Vehicle ID & Trip ID & Arrival Time & Recorded Time\\ \midru
 
 \par We filtered out these negative values before calculating the average travel time between neighbouring stops.
 
-
-
-
-
-
-
-
 \section{Generating Reference Timetable}
 \subsection{Journey Planner Bus Timetables}
+\label{sec: official_tfl_timetable}
 \todo[inline]{Need more detailed explanation. Walk through an example with xml code}
+\par In order to calculate the delays in bus arrival times, we need the official bus travel times between stops for reference. This data was extracted from the Journey Planner Bus Timetables\cite{open_data_feeds_description} as part of the \acrshort{tfl} Open Data.
+
+
 \par Each xml file contains bus schedule information for a route. For each day of the week, there are predefined number of VehicleJourneys running the give route throughout the day. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieve the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
 
 The above computation was performed on each xml file to generate the actual arrival time and travel time for each vehicle trip at each stop in the route throughout the day. The results of this computation was stored in the delay\_tfl\_timetable table(Table \ref{table:delay_tfl_timetable}).

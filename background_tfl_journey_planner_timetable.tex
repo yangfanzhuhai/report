@@ -1,20 +1,20 @@
 %!TEX root = report.tex
 \subsection{Journey Planner Bus Timetables}
-In order to calculate the delays in bus arrival times, we need the official bus travel times between stops for reference. This data was extracted from the Journey Planner Bus Timetables\cite{open_data_feeds_description} as part of the \acrshort{tfl} Open Data. The timetables contians information on bus schedules including stops, routes, departures times, departure frequencies, operational notes, as well as the days on which the services run.
+The Journey Planner Bus Timetables\cite{open_data_feeds_description}  contians information on official bus schedules including stops, routes, departures times, departure frequencies, operational notes, as well as the days on which the services run.
 
-The timetables uses the \acrfull{xml} \cite{xml} format, with the schema defined in \gls{transxchange} \cite{transxchange}, the UK nationwide standard for exchanging bus schedules and related data. We used the General schema version 2.1\cite{transxchange_downloads_and_schema}\cite{transxchange_schema_2.1_xsd} for this project.
+The timetables uses the \acrfull{xml} \cite{xml} format, with the schema defined in \gls{transxchange} \cite{transxchange}, the UK nationwide standard for exchanging bus schedules and related data. For this project, we used the General schema version 2.1\cite{transxchange_downloads_and_schema}\cite{transxchange_schema_2.1_xsd}, the latest available version for download. Each \acrshort{xml} file contains the bus timetables for one route.
 
 \subsubsection{Data Structure}
-The \gls{transxchange} model has seven basic concepts\cite{transxchange_schema_guide}:
-\todo[inline]{insert definitions here}
+The \gls{transxchange} timetable model has the following seven basic concepts\cite{transxchange_schema_guide}:
+
 \begin{enumerate}
-  \item \textit{Service},
-  \item \textit{Registration},
-  \item \textit{Operator},
-  \item \textit{Route} specifies an ordered list of \textit{StopPoints}.
-  \item \textit{StopPoint} contains reusable declarations of the stops used by the routes and journey patterns of the schedule. All StopPointRef instances elsewhere in a document are resolved against the contents of the StopPoints element.
-  \item \textit{JourneyPattern} specifies an ordered list of links between the \textit{StopPoints}, giving
-relative times between each stop.
-  \item \textit{VehicleJourney} specifies the list of stops at specific absolute passing times.
+  \item \textbf{Service} contains one or more \textbf{JourneyPattern} elements and one or more \textbf{VehicleJourney} elements. This is the basic concept that brings together the information about a registered bus service.
+  \item \textbf{Registration} specifies the registration details for a service.
+  \item \textbf{Operator} indicates the entity who runs the service.
+  \item \textbf{Route} describes the physical path taken by buses on the service as an ordered list of \textbf{StopPoints}.
+  \item \textbf{StopPoint} contains reusable declarations of the stops used by the routes and journey patterns of the schedule. All StopPointRef instances elsewhere in a document are resolved against the contents of the StopPoints element. All stops are defined as being \gls{naptan} points.
+  \item \textbf{JourneyPattern} specifies an ordered list of links between the \textbf{StopPoints}, giving the \emph{relative travel times} between each pair of neighbouring stops.
+  \item \textbf{VehicleJourney} specifies the individual scheduled journey \emph{at a specific absolute time}.
 \end{enumerate}
 
+These elements give a complete official bus schedule for each route with the departure time for each bus journey, the relative bus travel time between stops, and the days on which the service operates on. We extracted the offical bus timetables from these \acrshort{xml} files, as discussed in Section \ref{sec: official_tfl_timetable}.
