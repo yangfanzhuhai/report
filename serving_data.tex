@@ -1,22 +1,19 @@
 %!TEX root = report.tex
-\chapter{Serving the Data as REST API}
+\chapter{Delay Data Service}
 
 \section{Overview}
-Objective of setting this up - to enable easy and fast query of the predictions I generated
+To enable structured query of the predictions generated, we created a REST API service for the prediction data. We hope to make these endpoints freely available for other developers to use.
 
-\section{Frameworks}
-
-\subsection{Django Framework}
+\section{Django Framework}
+\par We used Django Framework\cite{django_framework} for the backend of this project. It is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. We chose it for the following advantages:
 
 \begin{itemize}
-  \item what is it
-  \item why did I choose it
-  \item what are the available options and why do I choose the current one
+  \item It stores databases schema as data models\cite{django_model}, and allows for quick database migration. This makes deployment to the production server easy by using the given migration command \cite{django_migrations}.
+  \item Django handles user authentication securely \cite{django_user_auth}, which saves work for development on this part.
+  \item It has a nice compatible REST framework\cite{django_rest}, which supports REST API routing\cite{django_rest_routing} and query parameter parsing. Additionally, it offers a built-in user interface that displays the query result with pagination\cite{django_rest_pagination}.
+  \item Django has a Debug mode that display constructive error messages, make the development much easier.
+  \item It is written in Python, which is a preferred language for its simple and short syntax.
 \end{itemize}
-
-\par Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design\cite{django_framework}.
-
-\subsection{Django REST Framework}
 
 \section{API Endpoints}
 \begin{itemize}
@@ -24,7 +21,6 @@ Objective of setting this up - to enable easy and fast query of the predictions 
   \item parameters supplied
   \item return result format
 \end{itemize}
-
 
 \subsection{Historical \& Current}
 \subsection{Reference}
