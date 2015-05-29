@@ -1,22 +1,7 @@
 %!TEX root = report.tex
-\chapter{Data Collection and Generation}
-\label{ch:data_generation}
-\section{Overview}
+\section{Generating Current Timetable}
+\label{sec:current_timetable_generation}
 
-\todo[inline]{UML diagrams}
-
-\section{Development Environment}
-\subsection{Virtual Machine}
-
-\subsection{MySQL Databases}
-\par We chose to use MySQL to store the data for the following benefits it offers:
-
-\begin{itemize}
-  \item \textbf{User Interface} MySQL has convenient database management tools such as phpMyAdmin\cite{phpmyadmin} and Sequel Pro\cite{sequel_pro} for easy data browsing.
-  \item \textbf{Scalability} MySQL can handle memory heavy computation efficiently, given the correct configuration.
-\end{itemize}
-
-\section{Generating Historical Timetable}
 \begin{itemize}
   \item data collection
   \item data storing
@@ -138,7 +123,7 @@ id & route & start\_stop & end\_stop \\ \midrule
 
 \par We plan to construct a timetable this way for each pair of the neighbouring bus stop.
 
-\subsection{Filtering out the negative travel times}
+\subsection{Negative Travel Time Filter}
 \par In the travel\_time\_log generated, there were trips between two neighbouring stops with negative travel times, such as the entry shown in Table \ref{table:travel_time_log_negative}.
 
 \begin{table}
@@ -165,36 +150,3 @@ Stop Code & Route & Vehicle ID & Trip ID & Arrival Time & Recorded Time\\ \midru
 \end{table}
 
 \par We filtered out these negative values before calculating the average travel time between neighbouring stops.
-
-\section{Generating Reference Timetable}
-\subsection{Journey Planner Bus Timetables}
-\label{sec: official_tfl_timetable}
-\todo[inline]{Need more detailed explanation. Walk through an example with xml code}
-\par In order to calculate the delays in bus arrival times, we need the official bus travel times between stops for reference. This data was extracted from the Journey Planner Bus Timetables\cite{open_data_feeds_description} as part of the \acrshort{tfl} Open Data.
-
-
-\par Each xml file contains bus schedule information for a route. For each day of the week, there are predefined number of VehicleJourneys running the give route throughout the day. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieve the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
-
-The above computation was performed on each xml file to generate the actual arrival time and travel time for each vehicle trip at each stop in the route throughout the day. The results of this computation was stored in the delay\_tfl\_timetable table(Table \ref{table:delay_tfl_timetable}).
-
-\begin{table}
-\centering
-\begin{tabular}{@{}llp{6cm}@{}} \toprule
-Column Name & Type & Comments\\ \midrule
-id(Primary Key) & int(11)  & Auto Increment\\ [0.4cm]
-route & varchar(64) & The bus route \\ [0.4cm]
-day & varchar(32) & The day of week for the vehicle journey \\ [0.4cm]
-run & int(11) & The route direction \\ [0.4cm]
-sequence & int (11) & The sequence of the bus stop in the route \\ [0.4cm]
-stop\_name & varchar(64) & The name of the bus stop \\ [0.4cm]
-naptan\_atco & varchar(64) & The national identifier of the bus stop \\ [0.4cm]
-arrival\_time & datetime(6) & The expected arrival time for the given vehicle at the current bus stop \\ [0.4cm]
-travel\_time & int(11) & The travel time in seconds from the previous stop in the route to the current stop \\ [0.4cm]
-cumulative\_travel\_time & int(11) & The travel time  in seconds from the terminal to the current stop \\ [0.4cm]
-departure\_time\_from\_origin & datetime(6) & The departure time of the given vehicle from the terminal \\
-\bottomrule
-\end{tabular}
-\caption{delay\_tfl\_timetable Table Schema}
-\label{table:delay_tfl_timetable}
-\end{table}
-

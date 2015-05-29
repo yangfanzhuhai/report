@@ -26,3 +26,4 @@ do
 *.tdo
 *.sh
 figures/backup/
+*.txt

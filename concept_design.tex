@@ -1,26 +1,37 @@
 %!TEX root = report.tex
 \chapter{Concept Design}
 \section{Objectives}
- there is a need to improve the prediction of bus travel time downstream from location of last observation in mixed traffic operations. Methods are required for making predictions in normal traffic conditions, as well as in conditions in which a temporary lane closure is experienced due to a variety of reasons, such as incidents and road improvement activities
+\par We aim to improve the prediction of bus travel time downstream from location of last observation in mixed traffic operations. We achieve this by providing an API data service of bus travel time predictions, and a demonstrative web application to show case the use of such a data service.
 
-% MODELS FOR PREDICTING BUS DELAYS - ResearchGate. Available from: http://www.researchgate.net/publication/239438109_MODELS_FOR_PREDICTING_BUS_DELAYS [accessed May 28, 2015].
-We try to find a solution for theses two problems by providing a service of bus travel time predictions, and a demo application to show case the use of such a data service.
+\section{Bus Travel Times}
+\par The bus travel time between 2 neighbouring stops depends on many unpredictable external factors. These include weather conditions, passenger flow, temporary lane closures, as well as the time of the bus trip. Predicting bus travel times by discovering and analysing these contributing factors is complicated.
 
-\section{Overview}
-\par \acrshort{tfl} releases average travel time between stops. However, this data is too general and sometimes not accurate.
+\par We decided to bypass looking at these factors, and examine the historical and current bus travel times instead. We assumed that for a specific short time frame, the external factors remain largely unchanged. In this case, the bus travel time between the given 2 neighbouring stops is similar to the previous trips performed in the same time frame.
 
-\par The general idea to predict delays is that the average travel time between 2 stops depends mainly on the day of the week and the hour.
+\par For bus travel time between every pair of neighbouring stop at each hour of the day, we provide estimations for the following:
+\begin{itemize}
+  \item \textbf{Reference Timtable} How long does TfL says it take?
+  \item \textbf{Current Timetable} How long does it currently take?
+  \item \textbf{Historical Timetable} How long does it usually take?
+\end{itemize}
 
-\section{Historical Timetable}
-\par We collect historical bus arrival tiems, and culculate the average travel time between 2 neighbouring bus stops by all routes, on given day and hour
+\par Since the reference timetable shows the typical bus travel time, the historical timetable should converge to the reference timetable over time.
 
-\section{Current Timetable}
-\par We collect the past 1 hour of bus arrival times, and calculate the average travel time between neighbouring bus stops.
+\par The current timetable shows the most relevant bus travel time at the observation point, a significant increase in travel time compared to the historical or refernece timetables would indicate a bus delay.
 
-\section{Reference Timtable}
-\par Get the official average travel time from journey planner timetable
+\subsection{Reference Timetable}
+\par We extracted the average bus travel time between every pair of neighbouring stops for every route during every hour of the day for every day of the week from the \acrshort{tfl} Journey Planner Bus Timetables. This is discussed in Section \ref{sec: official_tfl_timetable}.
 
-\section{Assumption}
-\par The historical timetable should converge to reference timetable.
+\subsection{Current Timetable}
+\par We collect the live bus arrival times for the past 1 hour, and store the final bus arrival times for each bus at each stop. We then find out the travel time of each bus between every pair of neighbouring stops for the given hour. Next, we calculate the average travel time between each pair of neighbouring bus stops. This serves as a prediction for how long the bus currently takes to travel between two neighbouring stops. See implementation details in Section \ref{sec:current_timetable_generation}.
 
-\par When the current timetable is very different from reference timetable, there's delay.
+\subsection{Historical Timetable}
+\par We store the current timetable generated at each hour, and group them by the hour of the day for the same day of the week. We then calculate the average bus travel time between each pair of neighbouring stops for each hour of the day in each day of the week. For example, the average bus travel time between stop A and stop B for 3pm on Wednesday is the average travel time for all the bus trips between these two stops between 2pm to 3pm in the past Wednesdays. More details cound be found in Section \ref{sec:historical_timetable}.
+
+\section{API Data Service and Delay Warning}
+\par We provided the above mentioned three timetables as an API data service (Chapter \ref{ch:data_service}) and designed a demostrative mbile application that warns users of current bus delays from a given bus stop (Chapter \ref{ch:mobile_app}).
+
+
+
+
+
