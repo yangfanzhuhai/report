@@ -1,32 +1,24 @@
 %!TEX root = report.tex
 \section{Generating Reference Timetable}
-\subsection{Journey Planner Bus Timetables}
 \label{sec: official_tfl_timetable}
-\todo[inline]{Need more detailed explanation. Walk through an example with xml code}
-\par In order to calculate the delays in bus arrival times, we need the official bus travel times between stops for reference. This data was extracted from the Journey Planner Bus Timetables\cite{open_data_feeds_description} as part of the \acrshort{tfl} Open Data.
+\par We used The ElementTree XML API in Python \cite{elementtree} to extract the official bus travel times between stops from the Journey Planner Bus Timetables\cite{open_data_feeds_description}.
+
+\par Each \acrshort{xml} file contains bus schedule information for one route. We carried out the following steps on each \acrshort{xml} file:
+
+\begin{enumerate}
+  \item Obtain the route from \textbf{Services} $\rightarrow$ \textbf{Service} $\rightarrow$ \textbf{Lines} $\rightarrow$ \textbf{Line} $\rightarrow$ \textbf{LineName}
+  \item For each \textbf{VehicleJourneys} $\rightarrow$ \textbf{VehicleJourney}, we extract the followings:
+  \begin{enumerate}
+    \item The departure time from \textbf{DepartureTime}
+    \item The days of the week that this journey operates on from \textbf{OperatingProfile} $\rightarrow$ \textbf{RegularDayType} $\rightarrow$ \textbf{DaysOfWeek}
+    \item The corresponding journey pattern reference from \textbf{JourneyPatternRef}
+  \end{enumerate}
+  \item From the journey pattern reference found in the previous step, we retrieve
+
+\end{enumerate}
 
 
-\par Each xml file contains bus schedule information for a route. For each day of the week, there are predefined number of VehicleJourneys running the give route throughout the day. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieve the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
+
+For each day of the week, there are a predefined number of VehicleJourneys running the give route. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieved the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
 
 The above computation was performed on each xml file to generate the actual arrival time and travel time for each vehicle trip at each stop in the route throughout the day. The results of this computation was stored in the delay\_tfl\_timetable table(Table \ref{table:delay_tfl_timetable}).
-
-\begin{table}
-\centering
-\begin{tabular}{@{}llp{6cm}@{}} \toprule
-Column Name & Type & Comments\\ \midrule
-id(Primary Key) & int(11)  & Auto Increment\\ [0.4cm]
-route & varchar(64) & The bus route \\ [0.4cm]
-day & varchar(32) & The day of week for the vehicle journey \\ [0.4cm]
-run & int(11) & The route direction \\ [0.4cm]
-sequence & int (11) & The sequence of the bus stop in the route \\ [0.4cm]
-stop\_name & varchar(64) & The name of the bus stop \\ [0.4cm]
-naptan\_atco & varchar(64) & The national identifier of the bus stop \\ [0.4cm]
-arrival\_time & datetime(6) & The expected arrival time for the given vehicle at the current bus stop \\ [0.4cm]
-travel\_time & int(11) & The travel time in seconds from the previous stop in the route to the current stop \\ [0.4cm]
-cumulative\_travel\_time & int(11) & The travel time  in seconds from the terminal to the current stop \\ [0.4cm]
-departure\_time\_from\_origin & datetime(6) & The departure time of the given vehicle from the terminal \\
-\bottomrule
-\end{tabular}
-\caption{delay\_tfl\_timetable Table Schema}
-\label{table:delay_tfl_timetable}
-\end{table}

@@ -2,91 +2,53 @@
 \section{Generating Current Timetable}
 \label{sec:current_timetable_generation}
 
-\begin{itemize}
-  \item data collection
-  \item data storing
-  \item data processing
-  \item DB optimisation
-  \item python scripts and SQLs
-  \item resulting table name and schema
-\end{itemize}
-
 \subsection{Collecting Bus Arrival Times}
 \label{sec:collecting_arrival_times}
 
-\par We collect bus arrival data for analysis from the live bus arrivals API. The base URL used in this project was \url{http://countdown.api.tfl.gov.uk/interfaces/ura/stream_V1}.
+\subsubsection{Building the Query URL}
+\par We collect bus arrival data for analysis from the live bus arrivals API. The base URL used in this project was \url{http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1}.
 
 \par We supplied the following parameters which specify the fields returned by the \acrshort{api}.
 
 \begin{itemize}
   \item \textit{StopID} This is the alphanumeric identifier of a bus stop. It is also known as stop\_code\_lbsl.
   \item \textit{LineName} This is the route number that is displayed on the front of the bus on any publicity advertising the route.
+  \item \textit{DirectionID} The direction of the bus.
   \item \textit{VehicleID} The unique identifier of the vehicle.
   \item \textit{TripID} The identifer of the specific trip that the prediction is for.
   \item \textit{EstimatedTime} This is the predicted time of arrival for the vehicle at a specific stop.
   \item \textit{ExpireTime} This is the time at which the corresponding prediction is no longer valid and should stop being displayed.
 \end{itemize}
 
-\par The resulting query URL is \sloppy \url{http://countdown.api.tfl.gov.uk/interfaces/ura/stream_V1?ReturnList=StopID,LineName,VehicleID,TripID,EstimatedTime,ExpireTime}.
+\par The resulting query URL is \sloppy \url{http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1?ReturnList=StopID,LineName,DirectionID,VehicleID,TripID,EstimatedTime,ExpireTime}.
 
-\par Each data entry contains an estimated arrival time for each bus journey at a given bus stop. This estimated arrival time is stored in the database via an UPDATE statement, which ensures that only the latest estimated arrival times per journey per bus stop are stored. To avoid having data being overwritten, only the entries that have been changed in the recent 10 minutes can be updated. This has been achieved through running a daemon process written in python on a virtual host. Table \ref{table:delay_arrivals_schema} shows the schema for arrivals table.
+\subsubsection{Storing Arrival Times}
+\par The TfL Live Bus Arrival Feed is updated every 30 seconds to give a more accurate predictions of the bus arrival times. We send an HTTP request to the above URL every 30 seconds.
 
-\begin{table}
-\centering
-\begin{tabular}{@{}llr@{}} \toprule
-Column Name & Type & Default \\ \midrule
-id(Primary) & int(11) & Auto Increment \\
-stop\_code\_lbsl & varchar(64) &  \\
-route & varchar(64) &  \\
-vehicle\_id & varchar(64) & \\
-trip\_id & varchar(64) & \\
-arrival\_date & date &  \\
-arrival\_time & timestamp & NULL \\
-expire\_time & timestamp & NULL \\
-recorded\_time & timestamp & Current Timestamp \\ \bottomrule
-\end{tabular}
-\caption{delay\_arrivals Table Schema}
-\label{table:delay_arrivals_schema}
-\end{table}
+\par Each data entry in the return result contains an estimated arrival time for each bus journey at a given bus stop. We assume that the actual bus arrival time is the the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
 
-\subsubsection{Assumption}
-We assume that the actual bus arrival time is the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
+\par Since sometimes the clear signal is lost for certain entries, we will assume the actual bus arrival time is the last estimated arrival time, when it is more than 15 minutes after the expire time. This means that we have not received any new updates for the given bus at a given stop 15 minutes after the last estmated arrival time.
 
-\subsection{Neighbouring Stops}
+\par As we would like to only store the actual bus arrival times, we keep a local copy of the current query result using the pickle module in Python\cite{pickle}, and only update the Databases when the most arrival time for the given bus at the given stop has expired for more than 15 minutes.
+
+\par We achieved this by the following steps:
+
+\begin{enumerate}
+  \item Load the local arrivals objects if there exists a copy.
+  \item Pull the new TfL arrivals predictions.
+  \item Update the loacl arrivals objects with the new predictions.
+  \item For arrival entries that have expired for more than 15 minutes, remove these entries from the local copy, and store them in the delay\_arrivals table in the Databases.
+\end{enumerate}
+
+These steps were implemented in a Python script. Each run of the steps takes approximately 10 to 15 seconds. We re-run the script 15 seconds after the previous run finishes.
+
+\subsection{Generating Bus Sequences and Neighbouring Stops}
 \label{sec:bus_stop_locations_routes}
-We imported the bus sequences into the delay\_bus\_sequences table (Table \ref{table:delay_bus_sequences})
+\par We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the delay\_bus\_sequences table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route.
 
-\begin{table}
-\centering
-\begin{tabular}{@{}llr@{}} \toprule
-Column Name & Type & Comments\\ \midrule
-id(Primary Key) & int(11)  & Auto Increment\\
-route & varchar(64) &  The route name\\
-run & int(11) & The route direction\\
-sequence & int(11) & The sequence of the bus stop in the route\\
-stop\_code\_lbsl & varchar(64) & The internal bus stop identifier\\
-bus\_stop\_code & varcher(64) & The public code for the bus stop\\
-naptan\_atco & varchar(64) & The national identifier of the bus stop\\
-stop\_name & varchar(64) & The name of the bus stop\\ \bottomrule
-\end{tabular}
-\caption{delay\_bus\_sequences Table Schema}
-\label{table:delay_bus_sequences}
-\end{table}
- \todo[inline, color=cyan]{Question: Can I skip some columns of the table schema, as those columns have not been used in the project, but just storing as reference for now?}
-\par Additionally, we extracted information on all pairs of neighbouring bus stops and the routes that serve between them. We save this information in the delay\_neighbours table (Table \ref{table:delay_neighbours}). See sample data in Table \ref{table:sample_neighbours_view}.
+\par In order to find out the average travel time between any pair of neighbouring stops, we need a list of all the neighbouring stops serving by various routes for reference.
 
-\begin{table}
-\centering
-\begin{tabular}{@{}llr@{}} \toprule
-Column Name & Type & Comments\\ \midrule
-id(Primary Key) & int(11)  & Auto Increment\\
-route & varchar(64) & The bus route \\
-start\_stop & varchar(64) & The stop\_code\_lbsl for the start stop\\
-end\_stop & varcher(64) & The stop\_code\_lbsl for the end stop\\ \bottomrule
-\end{tabular}
-\caption{delay\_neighbours Table Schema}
-\label{table:delay_neighbours}
-\end{table}
+\par We extracted this information from the bus routes data , and stored it in the delay\_neighbours table (Table \ref{table:delay_neighbours}). In the sample entries shown in Table \ref{table:sample_neighbours_view}, we can see that there are three different routes serving between stop 10002 and 11469. When calculating the average travel time between these two stops at a given hour, we used all bus trip information for these three routes.
 
 \begin{table}
 \centering
@@ -94,14 +56,13 @@ end\_stop & varcher(64) & The stop\_code\_lbsl for the end stop\\ \bottomrule
 id & route & start\_stop & end\_stop \\ \midrule
 18433 & 30 & 10002 & 11469 \\
 44878 & N19 & 10002 & 11469 \\
-47128 & N41 & 10002 & 29772 \\
 8653 & 19 & 10002 & 11469 \\ \bottomrule
 \end{tabular}
 \caption{Sample data in delay\_neighbours Table}
 \label{table:sample_neighbours_view}
 \end{table}
 
-\subsection{Finding the average travel time between neighbouring stops}
+\subsection{Generating the Average Travel Time Between Neighbouring Stops}
 \todo[inline] {update this part}
 \par To experiment with the queries, we selected one pair of the neighbouring stops (10002, 11469), and listed the time required to travel from stop 10002 to stop 11469 by finding the difference in arrival times for each journey. Sample entries of this list is shown in Figure \ref{fig:journey_time_10002}.
 

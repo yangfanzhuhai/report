@@ -1,0 +1,71 @@
+
+\begin{table}
+\centering
+\begin{tabular}{@{}llp{6cm}@{}} \toprule
+Column Name & Type & Comments\\ \midrule
+id(Primary Key) & int(11)  & Auto Increment\\ [0.4cm]
+route & varchar(64) & The bus route \\ [0.4cm]
+day & varchar(32) & The day of week for the vehicle journey \\ [0.4cm]
+run & int(11) & The route direction \\ [0.4cm]
+sequence & int (11) & The sequence of the bus stop in the route \\ [0.4cm]
+stop\_name & varchar(64) & The name of the bus stop \\ [0.4cm]
+naptan\_atco & varchar(64) & The national identifier of the bus stop \\ [0.4cm]
+arrival\_time & datetime(6) & The expected arrival time for the given vehicle at the current bus stop \\ [0.4cm]
+travel\_time & int(11) & The travel time in seconds from the previous stop in the route to the current stop \\ [0.4cm]
+cumulative\_travel\_time & int(11) & The travel time  in seconds from the terminal to the current stop \\ [0.4cm]
+departure\_time\_from\_origin & datetime(6) & The departure time of the given vehicle from the terminal \\
+\bottomrule
+\end{tabular}
+\caption{delay\_tfl\_timetable Table Schema}
+\label{table:delay_tfl_timetable}
+\end{table}
+
+
+\begin{table}
+\centering
+\begin{tabular}{@{}llr@{}} \toprule
+Column Name & Type & Default \\ \midrule
+id(Primary) & int(11) & Auto Increment \\
+stop\_code\_lbsl & varchar(64) &  \\
+route & varchar(64) &  \\
+vehicle\_id & varchar(64) & \\
+trip\_id & varchar(64) & \\
+arrival\_date & date &  \\
+arrival\_time & timestamp & NULL \\
+expire\_time & timestamp & NULL \\
+recorded\_time & timestamp & Current Timestamp \\ \bottomrule
+\end{tabular}
+\caption{delay\_arrivals Table Schema}
+\label{table:delay_arrivals_schema}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{@{}llr@{}} \toprule
+Column Name & Type & Comments\\ \midrule
+id(Primary Key) & int(11)  & Auto Increment\\
+route & varchar(64) &  The route name\\
+run & int(11) & The route direction\\
+sequence & int(11) & The sequence of the bus stop in the route\\
+stop\_code\_lbsl & varchar(64) & The internal bus stop identifier\\
+bus\_stop\_code & varcher(64) & The public code for the bus stop\\
+naptan\_atco & varchar(64) & The national identifier of the bus stop\\
+stop\_name & varchar(64) & The name of the bus stop\\ \bottomrule
+\end{tabular}
+\caption{delay\_bus\_sequences Table Schema}
+\label{table:delay_bus_sequences}
+\end{table}
+
+
+\begin{table}
+\centering
+\begin{tabular}{@{}llr@{}} \toprule
+Column Name & Type & Comments\\ \midrule
+id(Primary Key) & int(11)  & Auto Increment\\
+route & varchar(64) & The bus route \\
+start\_stop & varchar(64) & The stop\_code\_lbsl for the start stop\\
+end\_stop & varcher(64) & The stop\_code\_lbsl for the end stop\\ \bottomrule
+\end{tabular}
+\caption{delay\_neighbours Table Schema}
+\label{table:delay_neighbours}
+\end{table}
