@@ -62,52 +62,48 @@ id & route & start\_stop & end\_stop \\ \midrule
 \label{table:sample_neighbours_view}
 \end{table}
 
-\subsection{Generating the Average Travel Time Between Neighbouring Stops}
-\todo[inline] {update this part}
-\par To experiment with the queries, we selected one pair of the neighbouring stops (10002, 11469), and listed the time required to travel from stop 10002 to stop 11469 by finding the difference in arrival times for each journey. Sample entries of this list is shown in Figure \ref{fig:journey_time_10002}.
+\subsection{Generating the Current Average Travel Time Between Neighbouring Stops}
+\par To generate the current average travel time, we first isolated the arrival times collected in the recent one hour.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.7\textwidth]{figures/journey_time_10002.png}
-\caption{\label{fig:journey_time_10002} List of journey time from stop 10002 to stop 11469}
-\end{figure}
+\par We then performed the following steps on the recent arrivals data:
 
-\par We then calculated the average journey time required to travel from 10002 to 11469 for each hour in each week of the day. This information is stored as a timetable, which would be used for further analysis.
+\begin{enumerate}
+  \item For each bus traveling between each pair of the neighbouring bus stop,
+  \begin{enumerate}
+    \item We found out the arrival times for the same bus at the start stop and the end stop of the neighbouring pair.
+    \item We calculated the difference of these two arrival times, and saved it as one entry of the travel time.
+  \end{enumerate}
+  \item We computed the the average travel time of all bus trips took place between every pair of neighbouring stops, and saved it in the current timetable.
+  \item We also saved the current day of week, and hour of the day in the timetable for reference.
+\end {enumerate}
 
-\par Figure\ref{fig:timetable_10002} shows the timetable generated. Each cell indicates the average journey time required to travel from stop 10002 to stop 11469 at a give hour of a give week of day. The \textbf{NULL} values are due to a current databases performance issue. This will be resolved later.
+\par We run the above steps every hour to refresh the current timetable. Before every update, we stored the current timetable into a log for generating the historical timetable.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.9\textwidth]{figures/timetable_10002.png}
-\caption{\label{fig:timetable_10002} Average journey time in seconds from stop 10002 to stop 11469 for each hour of each day of week}
-\end{figure}
 
-\par We plan to construct a timetable this way for each pair of the neighbouring bus stop.
+% \subsection{Negative Travel Time Filter}
+% \par In the travel\_time\_log generated, there were trips between two neighbouring stops with negative travel times, such as the entry shown in Table \ref{table:travel_time_log_negative}.
 
-\subsection{Negative Travel Time Filter}
-\par In the travel\_time\_log generated, there were trips between two neighbouring stops with negative travel times, such as the entry shown in Table \ref{table:travel_time_log_negative}.
+% \begin{table}
+% \centering
+% \begin{tabular}{@{}lllllr@{}} \toprule
+% Start Stop & End Stop & Route & Start Time & End Time & Travel Time(sec) \\ \midrule
+% 9326 & 15552 & W13 & 14:53:18 & 14:52:14 & -64 \\ \bottomrule
+% \end{tabular}
+% \caption{Travel Time Log Entry with Negative Travel Time}
+% \label{table:travel_time_log_negative}
+% \end{table}
 
-\begin{table}
-\centering
-\begin{tabular}{@{}lllllr@{}} \toprule
-Start Stop & End Stop & Route & Start Time & End Time & Travel Time(sec) \\ \midrule
-9326 & 15552 & W13 & 14:53:18 & 14:52:14 & -64 \\ \bottomrule
-\end{tabular}
-\caption{Travel Time Log Entry with Negative Travel Time}
-\label{table:travel_time_log_negative}
-\end{table}
+% \par This was because when we performed the join of the arrivals table, there was a more recent update on the arrival times for the start stop, whereas the arrival times of end stop had not been updated. In Table \ref{table:negative_travel_time_explained}, we observed that the Recorded Time for the end stop 9326 was more recent than that of the end stop. As a result, the arrival time for the end stop was earlier than the start stop, causing the travel time to be negative.
 
-\par This was because when we performed the join of the arrivals table, there was a more recent update on the arrival times for the start stop, whereas the arrival times of end stop had not been updated. In Table \ref{table:negative_travel_time_explained}, we observed that the Recorded Time for the end stop 9326 was more recent than that of the end stop. As a result, the arrival time for the end stop was earlier than the start stop, causing the travel time to be negative.
+% \begin{table}
+% \centering
+% \begin{tabular}{@{}lllllr@{}} \toprule
+% Stop Code & Route & Vehicle ID & Trip ID & Arrival Time & Recorded Time\\ \midrule
+% 9326 & W13 & 18685 & 135229 &  14:53:18 & 14:48:25 \\ [0.4cm]
+% 15552 & W13 & 18685 & 135229 & 14:52:14 & 14:44:02 \\ \bottomrule
+% \end{tabular}
+% \caption{Arrivals Entries to Explain Negative Travel Time}
+% \label{table:negative_travel_time_explained}
+% \end{table}
 
-\begin{table}
-\centering
-\begin{tabular}{@{}lllllr@{}} \toprule
-Stop Code & Route & Vehicle ID & Trip ID & Arrival Time & Recorded Time\\ \midrule
-9326 & W13 & 18685 & 135229 &  14:53:18 & 14:48:25 \\ [0.4cm]
-15552 & W13 & 18685 & 135229 & 14:52:14 & 14:44:02 \\ \bottomrule
-\end{tabular}
-\caption{Arrivals Entries to Explain Negative Travel Time}
-\label{table:negative_travel_time_explained}
-\end{table}
-
-\par We filtered out these negative values before calculating the average travel time between neighbouring stops.
+% \par We filtered out these negative values before calculating the average travel time between neighbouring stops.
