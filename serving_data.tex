@@ -2,7 +2,7 @@
 \chapter{Delay Data Service}
 \label{ch:data_service}
 \section{Overview}
-To enable structured query of the predictions generated, we created a REST API service for the prediction data. We hope to make these endpoints freely available for other developers to use.
+\par To enable structured query of the predictions generated, we created a REST API service for the prediction data. We hope to make these endpoints freely available for other developers to use.
 
 \section{Django Framework}
 \par We used Django Framework\cite{django_framework} for the backend of this project. It is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. We chose it for the following advantages:
@@ -16,17 +16,45 @@ To enable structured query of the predictions generated, we created a REST API s
 \end{itemize}
 
 \section{API Endpoints}
+\par We built the backend using Django framework, and exposed the following 3 endpoints for users to access data.
+
+\subsection{Historical \& Current Timetables}
+\par This API endpoint is built to provide information on how long the bus on a given route at a given hour of the given day will take to reach the future stops from a given starting stop.
+
+\subsubsection{Query URL \& Parameters}
+\par The base URL to access the historical and current timetables is \url{http://delay.doc.ic.ac.uk:5000/predictions/?}.
+
+\par The following parameters are required to obtain a specific set of predictions:
+\begin{itemize}
+  \item \textbf{day} Day of the week
+  \item \textbf{hour} Hour of the day [0 - 23]
+  \item \textbf{route} Route
+  \item \textbf{run} Route direction
+  \item \textbf{naptan\_atco} The \gls{naptan} code for the starting downstream stops in the route
+\end{itemize}
+
+\par For example, the URL to retrieve historical and current bus travel time predictions for route 360 for downstream stops starting with \gls{naptan} code 490016263E at hour 15 on Tuesday is \url{http://delay.doc.ic.ac.uk:5000/predictions/?day=Tuesday&hour=15&route=360&run=2&naptan_atco=490016263E}.
+
+\subsubsection{Result Format}
+\par The result of the API query is a JSON list of bus stops, following the given route sequences in the given route direction, starting with the given stop.
+
+\par Each bus stop entry contains information on the bus stop, as well as the bus travel time in seconds. The following four fields are the most important ones:
+
+\begin{itemize}
+  \item \textbf{average\_travel\_time} Historical average bus travel time from the previous stop to the current stop.
+  \item \textbf{cumulative\_travel\_time} Historical average bus travel time from the given starting stop to the current stop.
+  \item \textbf{average\_travel\_time} Current average bus travel time from the previous stop to the current stop.
+  \item \textbf{cumulative\_travel\_time} Current average bus travel time from the given starting stop to the current stop.
+\end{itemize}
+
+\subsection{Reference Timetable}
 \begin{itemize}
   \item address of the endpoint
   \item parameters supplied
   \item return result format
 \end{itemize}
-
-\subsection{Historical \& Current}
-\subsection{Reference}
+\url{http://delay.doc.ic.ac.uk:5000/tfl_timetable/?day=Tuesday&hour=15&route=360&run=2&naptan_atco=490016263E}
 \subsection{Arrival}
-
-
 
 \section{Summary of data service}
 Met the first objective by supplying data on bus travel time predictions
