@@ -1,4 +1,4 @@
-
+%!TEX root = report.tex
 \begin{table}
 \centering
 \begin{tabular}{@{}llp{6cm}@{}} \toprule
@@ -10,10 +10,8 @@ run & int(11) & The route direction \\ [0.4cm]
 sequence & int (11) & The sequence of the bus stop in the route \\ [0.4cm]
 stop\_name & varchar(64) & The name of the bus stop \\ [0.4cm]
 naptan\_atco & varchar(64) & The national identifier of the bus stop \\ [0.4cm]
-arrival\_time & datetime(6) & The expected arrival time for the given vehicle at the current bus stop \\ [0.4cm]
-travel\_time & int(11) & The travel time in seconds from the previous stop in the route to the current stop \\ [0.4cm]
-cumulative\_travel\_time & int(11) & The travel time  in seconds from the terminal to the current stop \\ [0.4cm]
-departure\_time\_from\_origin & datetime(6) & The departure time of the given vehicle from the terminal \\
+average\_travel\_time & datetime(6) & The average travel time in seconds for the bus trips from the previous stop in the route to the current stop during the given arrival hour \\ [0.4cm]
+cumulative\_travel\_time & int(11) & The average travel time in seconds from the terminal to the current stop for the bus trips arrived at the current stop in the given arrival hour \\
 \bottomrule
 \end{tabular}
 \caption{delay\_tfl\_timetable Table Schema}
