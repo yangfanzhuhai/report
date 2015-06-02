@@ -1,3 +1,6 @@
 %!TEX root = report.tex
 \section{Generating Historical Timetable}
 \label{sec:historical_timetable}
+\par The current timetable generated every hour is stored in a log. We processed this log by computing the average bus travel time by the start stop, end stop, day of the week, and hour of the day.
+
+\par This computation is performed weekly on Sunday midnight to update the historical timetable.

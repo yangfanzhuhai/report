@@ -5,11 +5,24 @@
 
 % \todo[inline]{UML diagrams}
 
-% \section{Development Environment}
-% \subsection{Virtual Machine}
-% \par We set up a Virtual Machine in the
+\section{Development Environment}
+\subsection{Virtual Machine}
+\par We set up a Virtual Machine in the Doc's Private Cloud\cite{private_cloud} with the specifications shown in Table \ref{table:virtual_machine}. We allocated a large memory for memory intensive Databases operations.
 
-\section{MySQL Databases}
+\begin{table}
+\centering
+\begin{tabular}{@{}lr@{}} \toprule
+Spec & Value \\ \midrule
+Number of CPU Cores & 8 \\
+CPU (in MHz) & 1000 \\
+Memory (in GB) & 30 \\
+ \bottomrule
+\end{tabular}
+\caption{Virtual Machine Specifications}
+\label{table:virtual_machine}
+\end{table}
+
+\subsection{MySQL Databases}
 \par We chose to use MySQL to store the data for the following benefits it offers:
 
 \begin{itemize}
@@ -17,6 +30,21 @@
   \item \textbf{Scalability} MySQL can handle memory heavy computation efficiently, given the correct configuration.
 \end{itemize}
 
-\todo[inline]{DB Optimisation}
+\subsubsection{Databases Optimisation}
+\par As some databases operations involve joining large tables, we optimised the Databases with the following settings in file \textit{/etc/mysql/my.cnf} to allow MySQL to access more memory in the Virtual Machine\cite{setting_innodb_buffer_pool_size} \cite{innodb_buffer}.
+
+\begin{verbatim}
+[mysqld]
+innodb_io_capacity = 2000
+innodb_read_io_threads = 64
+innodb_thread_concurrency = 0
+innodb_write_io_threads = 64
+innodb_buffer_pool_size=20G
+join_buffer_size=2G
+sort_buffer_size=1G
+read_buffer_size=1G
+read_rnd_buffer_size=1G
+max_connection=200
+\end{verbatim}
 
 
