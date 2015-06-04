@@ -44,7 +44,7 @@ These steps were implemented in a Python script. Each run of the steps takes app
 
 \subsection{Generating Bus Sequences and Neighbouring Stops}
 \label{sec:bus_stop_locations_routes}
-\par We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the delay\_bus\_sequences table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route.
+\par We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the delay\_bus\_sequences table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route. As the sequence information for some routes have gaps, we preprocessed the data by updating the sequence number of the following stops to fill up the gaps. This preprocessing step was done after a few examples verified with the up-to-date TfL routes in the TfL Journey Planner.
 
 \par In order to find out the average travel time between any pair of neighbouring stops, we need a list of all the neighbouring stops serving by various routes for reference.
 
