@@ -1,0 +1,29 @@
+%!TEX root = report.tex
+\chapter{Delay Data Service}
+\label{ch:data_service}
+\section{Overview}
+\par To enable structured query of the predictions generated, we created a REST API service for the prediction data. We hope to make these endpoints freely available for other developers to use.
+
+\section{Django Framework}
+\par We used Django Framework\cite{django_framework} for the backend of this project. It is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. We chose it for the following advantages:
+
+\begin{itemize}
+  \item It stores databases schema as data models\cite{django_model}, and allows for quick database migration. This makes deployment to the production server easy by using the given migration command \cite{django_migrations}.
+  % \item Django handles user authentication securely \cite{django_user_auth}, which saves work for development on this part.
+  \item It has a nice compatible REST framework\cite{django_rest}, which supports REST API routing\cite{django_rest_routing} and query parameter parsing. Additionally, it offers a built-in user interface that displays the query result with pagination\cite{django_rest_pagination}.
+  \item Django has a Debug mode that display constructive error messages, make the development much easier.
+  \item It is written in Python, which is our preferred language for its simple and short syntax.
+\end{itemize}
+
+\section{Deployment Setup}
+\subsection{Python Virtual Environment}
+\par In order to manage our Python project requirements neatly and make deployment simple, we set up virtual environment\cite{virtualenv} \cite{virtualenvwrapper} to manage the project requirements. This helps to separate the Python packages installed for different projects as well.
+
+\subsection{Web Server}
+We chose to use Nginx\cite{nginx} as the web server and Gunicorn\cite{gunicorn} as the Python Web Server Gateway Interface HTTP Server.
+
+Nginx was chosen over Apache Web Server as it was more widely used with Django and Gunicorn setup, therefore there was more support articles available online for reference \cite{nginx_gunicorn_django}.
+
+\section{API Endpoints}
+\todo[inline]{Should I put screenshots for endpoints?}
+\par We built the backend using Django framework and Django REST framework, and exposed the following 3 endpoints for users to access data. The base URL for all endpoints is \url{http://delay.doc.ic.ac.uk:5000}.
