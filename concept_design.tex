@@ -1,5 +1,6 @@
 %!TEX root = report.tex
 \chapter{Concept Design}
+\label{ch:concept_design}
 \section{Objectives}
 \par We aim to improve the prediction of bus travel time downstream from location of last observation in mixed traffic operations. We achieve this by providing an API data service of bus travel time predictions, and a demonstrative web application to show case the use of such a data service.
 
@@ -33,12 +34,13 @@
 
 
 \section{Architecture Design}
-\begin{itemize}
-\item Used Django Framework to build the backend that retrieves data from a MySQL database.
+\par The overall architecture is shown in Figure \ref{fig:architecture}. We discuss each component in detail in the following chapters.
 
-\item Used AngularJS with Twitter Bootstrap for frontend development
-\end{itemize}
-\missingfigure{graph to show the overall structure}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/architecture.pdf}
+\caption{\label{fig:architecture} Architecture}
+\end{figure}
 
 
 

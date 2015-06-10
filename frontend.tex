@@ -1,20 +1,33 @@
 %!TEX root = report.tex
 \chapter{Mobile Application for Active Delay Warning}
 \label{ch:mobile_app}
-\section{Motivation}
-\par Demo App to use the data for effective delay warning
 
-\par Write from the user point of view
+\par We designed a web application to demonstrate the potential use of our API data service. It allows users to search for nearby bus stops, view the available routes and live bus arrival times. For each route, the user can view the historical, current and reference bus travel time to reach each downstream bus stop.
+
+\section{Implementation}
+\subsection{AugularJS Framework}
+\par We chose to use the AngularJS Framework \cite{angularjs} with UI Bootstrap \cite{bootstrap} to build the frontend of the application. This was because AngularJS employs a clear Model-View-Controller structure, and has a wide range of packages to build extensions with.
+
+\subsection{Development \& Deployment Pipeline}
+\par We used Yeoman \cite{yeoman}, a web application scaffolding tool, to organise and manage scripts and files. We also used Grunt \cite{grunt}, a Javascript task runner to manage the build and delopment process.
+
+\par For deployment, we created a Grunt task to run tests, minify the javascript files, and copy the minified version to the production server.
+
+\section{Frontend Walkthrough}
+\par We deployed the frontend web to \url{http://delay.doc.ic.ac.uk/}.
+
+\subsection{Landing Page}
+\par The map will be centered at the current location of the device. If the current location is not available, then the default map centered on London will be loaded.
+
+\subsection{}
+
+\section{Future Extensions}
+\par personalised active warning feature
 
 \par to demonstrate what the predictions can be used for non-technical users
 
 \par easy to use interface
 \par easy to understand data presentation
-
-\par personalised warning feature
-
-\section{Implementation}
-\subsection{AngularJS}
 
 \section{Deployment}
 
