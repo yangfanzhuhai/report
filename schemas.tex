@@ -1,24 +1,6 @@
 %!TEX root = report.tex
-\begin{table}
-\centering
-\begin{tabular}{@{}llp{6cm}@{}} \toprule
-Column Name & Type & Comments\\ \midrule
-id(Primary Key) & int(11)  & Auto Increment\\ [0.4cm]
-route & varchar(64) & The bus route \\ [0.4cm]
-day & varchar(32) & The day of week for the vehicle journey \\ [0.4cm]
-run & int(11) & The route direction \\ [0.4cm]
-sequence & int (11) & The sequence of the bus stop in the route \\ [0.4cm]
-stop\_name & varchar(64) & The name of the bus stop \\ [0.4cm]
-naptan\_atco & varchar(64) & The national identifier of the bus stop \\ [0.4cm]
-average\_travel\_time & datetime(6) & The average travel time in seconds for the bus trips from the previous stop in the route to the current stop during the given arrival hour \\ [0.4cm]
-cumulative\_travel\_time & int(11) & The average travel time in seconds from the terminal to the current stop for the bus trips arrived at the current stop in the given arrival hour \\
-\bottomrule
-\end{tabular}
-\caption{delay\_tfl\_timetable Table Schema}
-\label{table:delay_tfl_timetable}
-\end{table}
-
-
+\begin{appendices}
+\chapter{Database Table Schema}
 \begin{table}
 \centering
 \begin{tabular}{@{}llr@{}} \toprule
@@ -67,3 +49,25 @@ end\_stop & varcher(64) & The stop\_code\_lbsl for the end stop\\ \bottomrule
 \caption{delay\_neighbours Table Schema}
 \label{table:delay_neighbours}
 \end{table}
+\end{appendices}
+
+\begin{table}
+\centering
+\begin{tabular}{@{}llp{6cm}@{}} \toprule
+Column Name & Type & Comments\\ \midrule
+id(Primary Key) & int(11)  & Auto Increment\\ [0.4cm]
+route & varchar(64) & The bus route \\ [0.4cm]
+day & varchar(32) & The day of week for the vehicle journey \\ [0.4cm]
+run & int(11) & The route direction \\ [0.4cm]
+sequence & int (11) & The sequence of the bus stop in the route \\ [0.4cm]
+stop\_name & varchar(64) & The name of the bus stop \\ [0.4cm]
+naptan\_atco & varchar(64) & The national identifier of the bus stop \\ [0.4cm]
+average\_travel\_time & datetime(6) & The average travel time in seconds for the bus trips from the previous stop in the route to the current stop during the given arrival hour \\ [0.4cm]
+cumulative\_travel\_time & int(11) & The average travel time in seconds from the terminal to the current stop for the bus trips arrived at the current stop in the given arrival hour \\
+\bottomrule
+\end{tabular}
+\caption{delay\_tfl\_timetable Table Schema}
+\label{table:delay_tfl_timetable}
+\end{table}
+
+

@@ -1,8 +1,11 @@
 %!TEX root = report.tex
 \vspace{2in}
 \begin{abstract}
-\todo[inline]{abstract}
-<Abstract here>
-The abstract is a very brief summary of the report's contents. It should be about half a page long. Somebody unfamiliar with your project should have a good idea of what it's about having read the abstract alone and will know whether it will be of interest to them. Note that the abstract is a summary of the entire project including its conclusions. A common mistake is to provide only introductory elements in the abstract without saying what has been achieved.
-
+% Problem
+In London, billions of passengers travel by bus every year. Bus delay is a main concern for passengers when planning their journeys. Currently, there is no data service that provides reliable bus journey time to downstream stops.
+% Your Approach - ?
+\acrfull{tfl} offers data to quantify the deviation in bus journey times from the official timetable. We collected the \acrshort{tfl} live bus arrival times for each bus at each stop, and computed the average historical and current bus journey time between every pair of neighbouring stops on a route.
+% Solution - ?
+% Main contributions of paper
+We built a data service \acrshort{api} to provide historical, current, and reference bus journey times for a given hour on a given day of the week. To demonstrate the potential use of our \acrshort{api}, we designed a web application to allow passengers to browse these predicted bus jounrney times conveniently.
 \end{abstract}

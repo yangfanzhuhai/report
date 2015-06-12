@@ -1,8 +1,18 @@
 %!TEX root = report.tex
 \chapter{Future Work}
 
-\begin{itemize}
-  \item improve the performance of API endpoints by separating the data collection DB from the API request handling DB
+\section{API Performance}
+\par Currently, only one server is used to collect the data, process the data to produce timetables, and handle API queries. We could improve the performance of the API endpoints by using at least two servers, with one in charge of data collection and processing, and the other to handle live user queries.
 
 
-\end{itemize}
+
+% refactor
+% into separate components
+% make it less tightly coupled
+% data collection \& pre-processing
+% server handling live user queries
+
+\section{WebAppExtensions}
+\par We could inclue features to alert users of bus delays actively for extension. The application should track the device location, and alert users of any delays occurred on the frequently travelled routes.
+
+\par The user interface could be furture improve the make the experience smoother.

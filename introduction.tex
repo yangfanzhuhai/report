@@ -1,23 +1,18 @@
 %!TEX root = report.tex
 \chapter{Introduction}
 
-\par The London bus network carries 2.4 billion passengers a year \cite{tfl_annual_report_13/14}. On average, buses come about 1 minute later than scheduled \cite{buses_performance_report}.
+\par The London bus network carries 2.4 billion passengers a year \cite{tfl_annual_report_13/14}. While passengers could expect buses to arrive within 10 minutes 83.4\% of the time, there was a 15.1\% chance of a 10-20 minute wait, a 1.3\% chance of a 20-30 minute wait, and a 0.2\% chance of a wait exceeding 30 minutes.\cite{buses_performance_report}
 
 \par \acrfull{tfl} publishes live predictions of bus arrival times. This information is available on digital live bus arrivals signs at more than 2,500 bus stops \cite{live_bus_arrivals}. Commuters can also access this information via SMS, the \acrshort{tfl} website, or its mobile applications.
 
 \par Passengers use bus arrival times to plan their journey, by factoring in the waiting time when choosing the buses to take. Current London journey planning software takes the journey start time, start location, and destination as input, and recommends routes employing a variety of travel modes, with an estimated duration for each suggested journey. Popular planners include Google Maps \cite{google_maps}, Citymapper \cite{citymapper} and the \acrshort{tfl} Journey Planner \cite{tfl_journey_planner}.
 \par However, the accuracy of the bus arrival times published is affected by many external factors beyond the distance travelled. For example, when there is heavy traffic, buses are likely to be delayed significantly enough to cause a change in passengers' route picking.
 
-\par Yet, this delay information is not reflected in the arrival time data or the estimated journey time early enough for the passengers to make a decision to choose an alternate route. As a result, passengers waste time waiting for buses that come much later than expected, or choose to board a bus that will take much longer than the estimated journey time to reach the destination. Although the average bus delay is 1 minute, there is a 16.6\% chance of waiting for more than 10 minutes \cite{buses_performance_data}.
+\par Yet, this delay information is not reflected in the estimated bus journey time early enough for the passengers to make a decision to choose an alternate route. As a result, passengers waste time waiting for buses that come much later than expected, or choose to board a bus that will take much longer than the estimated journey time to reach the destination. Although the average bus delay is 1 minute, there is a 16.6\% chance of waiting for more than 10 minutes \cite{buses_performance_data}.
 
 \par This problem can be avoided if passengers are informed of the delays in bus arrival times and estimated travel time in addvance. Currently, the \acrshort{tfl} live bus arrivals \acrfull{api}feed\cite{live_bus_arrivals} provides data on immediate bus arrivals at a given stop. We verified the accuracy of this \acrshort{api} in Section \ref{sec:tfl_stream_accuracy}, and found that the accuracy of the arrival predictions vary by the projection time in future.The predictions are largely accurate for the next five minutes, with an average of 45 seconds delay. However, there are no available data services or applications that offer projected bus travel times that incorporate predicted delays.
 
-\par We provided such a data service (Chapter \ref{ch:data_service}) and built a demonstrative mobile application (Chapter \ref{ch:mobile_app}). The concept plan is presented in Chapter \ref{ch:concept_design}.
-
-% collected from the \acrshort{tfl} live bus arrivals \acrshort{api} feed, and estimated the average journey time required between two locations on a given time of the day. Next, a bus arrival time table with delays during various time windows over a week was crafted and fine tuned incrementally. We compared the travel times in this timetable with the official travel times published by the \acrshort{tfl} Open Data to find out the delays in bus arrival times.
-
-
-
+\par We collected data from the \acrshort{tfl} live bus arrivals \acrshort{api} feed to quantify the deviation in estimated bus journey time from the official timetable. We built a data service \acrshort{api} to provide historical, current, and reference bus travel times (Chapter \ref{ch:data_service}) and designed a demonstrative web application (Chapter \ref{ch:mobile_app}). The methodology is presented in Chapter \ref{ch:concept_design}.
 
 % provide a data
 %  Such delays can predicted by analysing the historical delays. This is achieved by

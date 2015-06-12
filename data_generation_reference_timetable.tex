@@ -2,46 +2,46 @@
 \section{Generating Reference Timetable}
 \label{sec: official_tfl_timetable}
 
-For each day of the week, there are a predefined number of VehicleJourneys running the give route. We used the VehicleJourneys as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieved the corresponding JourneyPattern, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
+For each day of the week, there are a predefined number of running the give route. We used the \texttt{VehicleJourneys} as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieved the corresponding \texttt{JourneyPattern}, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
 
-The above computation was performed on each xml file to generate the actual arrival time and travel time for each vehicle trip at each stop in the route throughout the day. We grouped the bus travel time by the hour that the arrival time falls in, and find the average bus travel time between every pair of the neighbouring stops for the given hour of the given day of the week. The results of this computation was stored in the delay\_tfl\_timetable table(Table \ref{table:delay_tfl_timetable}).
+The above computation was performed on each XML file to generate the actual arrival time and travel time for each vehicle trip at each stop in the route throughout the day. We grouped the bus travel time by the hour that the arrival time falls in, and find the average bus travel time between every pair of the neighbouring stops for the given hour of the given day of the week. The results of this computation was stored in the \texttt{delay\_tfl\_timetable} table (Table \ref{table:delay_tfl_timetable}).
 
 \subsection{Detailed Steps}
 
-\par We used The ElementTree XML API in Python \cite{elementtree} to extract the official bus travel times between stops from the Journey Planner Bus Timetables\cite{open_data_feeds_description}.
+\par We used the \texttt{ElementTree} XML API in Python \cite{elementtree} to extract the official bus travel times between stops from the Journey Planner Bus Timetables\cite{open_data_feeds_description}.
 
 \par Each \acrshort{xml} file contains bus schedule information for one route. We carried out the following steps on each \acrshort{xml} file:
 
 \begin{enumerate}
-  \item Obtain the route from \textbf{Services} $\rightarrow$ \textbf{Service} $\rightarrow$ \textbf{Lines} $\rightarrow$ \textbf{Line} $\rightarrow$ \textbf{LineName}
-  \item For each \textbf{VehicleJourneys} $\rightarrow$ \textbf{VehicleJourney}, we extract the followings:
+  \item Obtain the route from \texttt{Services} $\rightarrow$ \texttt{Service} $\rightarrow$ \texttt{Lines} $\rightarrow$ \texttt{Line} $\rightarrow$ \texttt{LineName}
+  \item For each \texttt{VehicleJourneys} $\rightarrow$ \texttt{VehicleJourney}, extract the followings:
   \begin{enumerate}
-    \item The departure time from \textbf{DepartureTime}
-    \item The days of the week that this journey operates on from \textbf{OperatingProfile} $\rightarrow$ \textbf{RegularDayType} $\rightarrow$ \textbf{DaysOfWeek}
-    \item The corresponding journey pattern reference from \textbf{JourneyPatternRef}
+    \item The departure time from \texttt{DepartureTime}
+    \item The days of the week that this journey operates on from \texttt{OperatingProfile} $\rightarrow$ \texttt{RegularDayType} $\rightarrow$ \texttt{DaysOfWeek}
+    \item The corresponding journey pattern reference from \texttt{JourneyPatternRef}
   \end{enumerate}
-  \item Each \textbf{JourneyPatternRef} maps to one Journey Pattern Section. This mapping is stored in \textbf{Services} $\rightarrow$ \textbf{Service} $\rightarrow$ \textbf{StandardService} $\rightarrow$ \textbf{JourneyPattern}.
+  \item Each \texttt{JourneyPatternRef} maps to one Journey Pattern Section. This mapping is stored in \texttt{Services} $\rightarrow$ \texttt{Service} $\rightarrow$ \texttt{StandardService} $\rightarrow$ \texttt{JourneyPattern}.
 
-  We retrieve the corresponding Journey Pattern Section Reference as such:
+  Retrieve the corresponding Journey Pattern Section Reference as such:
     \begin{enumerate}
-      \item Each \textbf{JourneyPattern} element contains an element id, and a subelement \textbf{JourneyPatternSectionRefs}.
-      \item We map each Journey Pattern id to its corresponding \textbf{JourneyPatternSectionRefs} for reference.
-      \item We consult the above mapping to retrieve the Journey Pattern Section Reference for each Journey Pattern Reference found in Step 2(c).
+      \item Each \texttt{JourneyPattern} element contains an element id, and a sub-element \texttt{JourneyPatternSectionRefs}.
+      \item Map each Journey Pattern id to its corresponding \\ \texttt{JourneyPatternSectionRefs} for reference.
+      \item Consult the above mapping to retrieve the Journey Pattern Section Reference for each Journey Pattern Reference found in Step 2(c).
     \end{enumerate}
-    \item Next, we obtained the bus travel time between every pair of neighbouring stops in the route from the \textbf{JourneyPatternSections}. The detailed steps are as the following:
+    \item Next, obtain the bus travel time between every pair of neighbouring stops in the route from the \texttt{JourneyPatternSections}. The detailed steps are as the following:
     \begin{enumerate}
-      \item For each \textbf{JourneyPatternSectionRefs}, find the corresponding \textbf{JourneyPatternSections} $\rightarrow$ \textbf{JourneyPatternSection} with the same id.
-      \item Each \textbf{JourneyPatternSection} contains multiple \textbf{JourneyPatternTimingLink} subelements. Each \textbf{JourneyPatternTimingLink} contains information for one pair of neighbouring bus stops. We retrieved the following information:
+      \item For each \texttt{JourneyPatternSectionRefs}, find the corresponding \texttt{JourneyPatternSections} $\rightarrow$ \texttt{JourneyPatternSection} with the same id.
+      \item Each \texttt{JourneyPatternSection} contains multiple \\ \texttt{JourneyPatternTimingLink} sub-elements. Each sub-element contains information for one pair of neighbouring bus stops. Retrieve the following information from each sub-element:
       \begin{enumerate}
-        \item \textbf{From SequenceNumber}
-        \item \textbf{From} $\rightarrow$ \textbf{StopPointRef}
-        \item \textbf{To SequenceNumber}
-        \item \textbf{To} $\rightarrow$ \textbf{StopPointRef}
-        \item \textbf{RunTime}
+        \item \texttt{From SequenceNumber}
+        \item \texttt{From} $\rightarrow$ \texttt{StopPointRef}
+        \item \texttt{To SequenceNumber}
+        \item \texttt{To} $\rightarrow$ \texttt{StopPointRef}
+        \item \texttt{RunTime}
       \end{enumerate}
     \end{enumerate}
-    \item At this point, we have the departure time from the terminal stop for each vehicle journey(Step 2(a)), and the bus travel time between every pair of the neighbouring stops (Step 4(b)v.). We calculate the cumulative bus travel time for each stop, and derive the bus arrival time at each stop for the given vehicle journey.
-    \item We group the bus travel time by the hour that the arrival time falls in, and find the average bus travel time between every pair of the neighbouring stops for the given hour of the given day of the week.
+    \item At this point, we have obtained the departure time from the terminal stop for each vehicle journey (Step 2(a)), and the bus travel time between every pair of the neighbouring stops (Step 4(b)v.). We calculated the cumulative bus travel time for each stop, and derived the bus arrival time at each stop for the given vehicle journey.
+    \item We grouped the bus travel time by the hour that the arrival time falls in, and computed the average bus travel time between every pair of the neighbouring stops for the given hour of the given day of the week.
 \end{enumerate}
 
 

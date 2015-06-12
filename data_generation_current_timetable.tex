@@ -6,18 +6,18 @@
 \label{sec:collecting_arrival_times}
 
 \subsubsection{Building the Query URL}
-\par We collect bus arrival data for analysis from the live bus arrivals API. The base URL used in this project was \url{http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1}.
+\par We collected bus arrival data for analysis from the live bus arrivals API. The base URL used in this project was \url{http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1}.
 
 \par We supplied the following parameters which specify the fields returned by the \acrshort{api}.
 
 \begin{itemize}
-  \item \textit{StopID} This is the alphanumeric identifier of a bus stop. It is also known as stop\_code\_lbsl.
-  \item \textit{LineName} This is the route number that is displayed on the front of the bus on any publicity advertising the route.
-  \item \textit{DirectionID} The direction of the bus.
-  \item \textit{VehicleID} The unique identifier of the vehicle.
-  \item \textit{TripID} The identifer of the specific trip that the prediction is for.
-  \item \textit{EstimatedTime} This is the predicted time of arrival for the vehicle at a specific stop.
-  \item \textit{ExpireTime} This is the time at which the corresponding prediction is no longer valid and should stop being displayed.
+  \item \textit{StopID.} This is the alphanumeric identifier of a bus stop. It is also known as stop\_code\_lbsl.
+  \item \textit{LineName.} This is the route number that is displayed on the front of the bus on any publicity advertising the route.
+  \item \textit{DirectionID.} The direction of the bus.
+  \item \textit{VehicleID.} The unique identifier of the vehicle.
+  \item \textit{TripID.} The identifer of the specific trip that the prediction is for.
+  \item \textit{EstimatedTime.} This is the predicted time of arrival for the vehicle at a specific stop.
+  \item \textit{ExpireTime.} This is the time at which the corresponding prediction is no longer valid and should stop being displayed.
 \end{itemize}
 
 \par The resulting query URL is \sloppy \url{http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1?ReturnList=StopID,LineName,DirectionID,VehicleID,TripID,EstimatedTime,ExpireTime}.
@@ -27,29 +27,27 @@
 
 \par Each data entry in the return result contains an estimated arrival time for each bus journey at a given bus stop. We assume that the actual bus arrival time is the the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
 
-\par Since sometimes the clear signal is lost for certain entries, we will assume the actual bus arrival time is the last estimated arrival time, when it is more than 15 minutes after the expire time. This means that we have not received any new updates for the given bus at a given stop 15 minutes after the last estmated arrival time.
+\par Since sometimes the clear signal is lost for certain entries, we assumed the actual bus arrival time is the latest recorded estimated arrival time, when there are no more updates 15 minutes after the expire time. This means that we have not received any new updates for the given bus at a given stop 15 minutes after the last estmated arrival time.
 
-\par As we would like to only store the actual bus arrival times, we keep a local copy of the current query result using the pickle module in Python\cite{pickle}, and only update the Databases when the most arrival time for the given bus at the given stop has expired for more than 15 minutes.
+\par As we would like to only store the actual bus arrival times, we keep a local copy of the current query result using the Python \texttt{pickle} module\cite{pickle}, and only update the databases when the most arrival time for the given bus at the given stop has expired for more than 15 minutes.
 
-\par We achieved this by the following steps:
+\par Here are the detailed steps:
 
 \begin{enumerate}
   \item Load the local arrivals objects if there exists a copy.
   \item Pull the new TfL arrivals predictions.
   \item Update the loacl arrivals objects with the new predictions.
-  \item For arrival entries that have expired for more than 15 minutes, remove these entries from the local copy, and store them in the delay\_arrivals table in the Databases.
+  \item For arrival entries that have expired for more than 15 minutes, remove these entries from the local copy, and store them in the \texttt{delay\_arrivals} table in the databases.
 \end{enumerate}
 
-These steps were implemented in a Python script. Each run of the steps takes approximately 10 to 15 seconds. We re-run the script 15 seconds after the previous run finishes.
+The above steps were implemented in a Python script. Each run of the steps takes approximately 10 to 15 seconds. We re-run the script 15 seconds after the previous run finishes.
 \label{sec:arrivals_daemon}
 
 \subsection{Generating Bus Sequences and Neighbouring Stops}
 \label{sec:bus_stop_locations_routes}
-\par We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the delay\_bus\_sequences table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route. As the sequence information for some routes have gaps, we preprocessed the data by updating the sequence number of the following stops to fill up the gaps. This preprocessing step was done after a few examples verified with the up-to-date TfL routes in the TfL Journey Planner.
+\par We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the \texttt{delay\_bus\_sequences} table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route. As the sequence information for some routes have gaps, we preprocessed the data by updating the sequence number of the following stops to fill up the gaps. This preprocessing step was done after a few examples verified with the up-to-date TfL routes in the TfL Journey Planner.
 
-\par In order to find out the average travel time between any pair of neighbouring stops, we need a list of all the neighbouring stops serving by various routes for reference.
-
-\par We extracted this information from the bus routes data , and stored it in the delay\_neighbours table (Table \ref{table:delay_neighbours}). In the sample entries shown in Table \ref{table:sample_neighbours_view}, we can see that there are three different routes serving between stop 10002 and 11469. When calculating the average travel time between these two stops at a given hour, we used all bus trip information for these three routes.
+\par In order to find out the average travel time between any pair of neighbouring stops, we needed a list of all the neighbouring stops serving by various routes for reference. We extracted this information from the bus routes data, and stored it in the \texttt{delay\_neighbours} table (Table \ref{table:delay_neighbours}). In the sample entries shown in Table \ref{table:sample_neighbours_view}, we can see that there are three different routes serving between stop 10002 and 11469. When calculating the average travel time between these two stops at a given hour, we used all bus trip information for these three routes.
 
 \begin{table}
 \centering
@@ -71,11 +69,11 @@ id & route & start\_stop & end\_stop \\ \midrule
 \begin{enumerate}
   \item For each bus traveling between each pair of the neighbouring bus stop,
   \begin{enumerate}
-    \item We found out the arrival times for the same bus at the start stop and the end stop of the neighbouring pair.
-    \item We calculated the difference of these two arrival times, and saved it as one entry of the travel time.
+    \item Find out the arrival times for the same bus at the start stop and the end stop of the neighbouring pair.
+    \item Calculate the difference of these two arrival times, and save it as one entry of the travel time.
   \end{enumerate}
-  \item We computed the the average travel time of all bus trips took place between every pair of neighbouring stops, and saved it in the current timetable.
-  \item We also saved the current day of week, and hour of the day in the timetable for reference.
+  \item Compute the the average travel time of all bus trips took place between every pair of neighbouring stops, and save it in the current timetable.
+  \item Save the current day of week, and hour of the day in the timetable for reference.
 \end {enumerate}
 
 \par We ran the above steps every hour to refresh the current timetable. Before every update, we stored the current timetable into a log for generating the historical timetable.

@@ -1,13 +1,11 @@
 %!TEX root = report.tex
 
 \subsection{Historical \& Current Timetables}
-\par This API endpoint is built to provide information on how long the bus on a given route at a given hour of the given day will take to reach the future stops from a given starting stop.
+\par This API endpoint provides information on how long the bus on a given route at a given hour of the given day will take to reach the downstream stops from a given starting stop.
 
 \subsubsection{Query URL \& Parameters}
 \label{sec:predictions_params}
-\par The base URL to access the historical and current timetables is \url{http://delay.doc.ic.ac.uk:5000/predictions/?}.
-
-\par The following parameters are required to obtain a specific set of predictions:
+\par The base URL to access the historical and current timetables is \url{http://delay.doc.ic.ac.uk:5000/predictions/?}. It requires the following parameters:
 \begin{itemize}
   \item \textbf{day} Day of the week
   \item \textbf{hour} Hour of the day [0 - 23]
@@ -19,15 +17,13 @@
 \par For example, the URL to retrieve historical and current bus travel time predictions for route 360 for downstream stops starting with \gls{naptan} code 490016263E at hour 15 on Tuesday is \url{http://delay.doc.ic.ac.uk:5000/predictions/?day=Tuesday&hour=15&route=360&run=2&naptan_atco=490016263E}.
 
 \subsubsection{Result Format}
-\par The result of the API query is a JSON list of bus stops, following the given route sequences in the given route direction, starting with the given stop.
-
-\par Each bus stop entry contains information on the bus stop, as well as the bus travel time in seconds. The following four fields are the most important ones:
+\par The result of the API query is a JSON list of bus stops, following the given route sequences in the given route direction, starting with the given stop. Each bus stop entry contains information on the bus stop, as well as the bus travel time in seconds. The following four fields are the most important ones:
 
 \begin{itemize}
-  \item \textbf{average\_travel\_time} Historical average bus travel time from the previous stop to the current stop.
-  \item \textbf{cumulative\_travel\_time} Historical average bus travel time from the given starting stop to the current stop.
-  \item \textbf{average\_travel\_time} Current average bus travel time from the previous stop to the current stop.
-  \item \textbf{cumulative\_travel\_time} Current average bus travel time from the given starting stop to the current stop.
+  \item \texttt{average\_travel\_time} Historical average bus travel time from the previous stop to the current stop.
+  \item \texttt{cumulative\_travel\_time} Historical average bus travel time from the given starting stop to the current stop.
+  \item \texttt{average\_travel\_time} Current average bus travel time from the previous stop to the current stop.
+  \item \texttt{cumulative\_travel\_time} Current average bus travel time from the given starting stop to the current stop.
 \end{itemize}
 
 \subsubsection{Backend Computation}

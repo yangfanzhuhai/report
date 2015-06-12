@@ -1,7 +1,8 @@
 %!TEX root = report.tex
 \chapter{Data Collection and Generation}
 \label{ch:data_generation}
-% \section{Overview}
+\section{Overview}
+\par This chapter discusses the backend development environment setup, and the detailed data collection and processing steps to generate the reference, current, and historical timetables.
 
 % \todo[inline]{UML diagrams}
 
@@ -23,15 +24,15 @@ Memory (in GB) & 30 \\
 \end{table}
 
 \subsection{MySQL Databases}
-\par We chose to use MySQL to store the data for the following benefits it offers:
+\par We chose MySQL for backend data storage for the following reasons:
 
 \begin{itemize}
-  \item \textbf{User Interface} MySQL has convenient database management tools such as phpMyAdmin\cite{phpmyadmin} and Sequel Pro\cite{sequel_pro} for easy data browsing.
-  \item \textbf{Scalability} MySQL can handle memory heavy computation efficiently, given the correct configuration.
+  \item \textbf{User Interface} MySQL has convenient database management tools that enable easy data browsing, such as phpMyAdmin\cite{phpmyadmin} and Sequel Pro \cite{sequel_pro}.
+  \item \textbf{Scalability} MySQL can handle memory-intensive computations efficiently once configured correctly.
 \end{itemize}
 
 \subsubsection{Databases Optimisation}
-\par As some databases operations involve joining large tables, we optimised the Databases with the following settings in file \textit{/etc/mysql/my.cnf} to allow MySQL to access more memory in the Virtual Machine\cite{setting_innodb_buffer_pool_size} \cite{innodb_buffer}.
+\par As some database operations involved joining large tables, we optimised the databases with the following settings in file \textit{/etc/mysql/my.cnf} to allow MySQL to access more memory in the Virtual Machine \cite{setting_innodb_buffer_pool_size,innodb_buffer}.
 
 \begin{verbatim}
 [mysqld]

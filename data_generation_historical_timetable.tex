@@ -1,6 +1,8 @@
 %!TEX root = report.tex
 \section{Generating Historical Timetable}
 \label{sec:historical_timetable}
-\par The current timetable generated every hour is stored in a log. We processed this log by computing the average bus travel time by the start stop, end stop, day of the week, and hour of the day.
+\par The historical timetable is generated from the current timetables. We processed the current timetable log by computing the average bus travel time by the start stop, end stop, day of the week, and hour of the day. This computation is performed weekly on Sunday midnight to update the historical timetable.
 
-\par This computation is performed weekly on Sunday midnight to update the historical timetable.
+
+\section{Summary}
+\par The data collection and generation forms is the key stage to produce the reference, current, and historical timetables. After we crafted and tested the scripts and procedures to update the timetables, we proceeded to build the data service API. This is dicussed in the next chapter.

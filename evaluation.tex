@@ -52,41 +52,71 @@ next 25 - 30 minutes & -166.1368 \\
 \par After we received 200 status code for all requests in a few test runs consistently, we proceeded to perform the load tests by fixing the day of the week and hour of the day to be the current values when the test was run.
 
 \subsection{Load Test for Performance}
-\par We found out that currently, the server could reliably handle about 150 users to send requests concurrently, with an average response time of 15.78 seconds. Figure \ref{fig:performance} shows the results of our tests.
+\par We carried out the siege test with various number of concurrent users ranging from 50 to 500, on a list of URLs with randomly selected parameters. We collected the test results and plotted the figures for availability, response time, and transaction rates \cite{siege_manual}. The metrics are defined as:
+
+\begin{itemize}
+  \item Response time is the average time it took to respond to each simulated user’s requests.
+
+  \item Transaction rate is the average number of transactions the server was able to handle per second, in a nutshell: transactions divided by elapsed time.
+
+  \item Successful transactions is the number of times the server returned a code less then 400. Accordingly, redirects are considered successful transactions.
+
+  \item Avalability is the percentage of successful transactions over the total number of server hits.
+\end{itemize}
+
+
+\subsubsection{Historical \& Current Timetables API Performance}
+
+\par We found out that currently, the server could reliably handle about 100 users to send requests concurrently, with an average response time of 15 seconds. Figure \ref{fig:siege_pre_api_availability} shows that the availability drops below 100\% after when there are more than 100 users accessing the API simultaneously. Figure \ref{fig:siege_pre_api_response_time} shows the response time and Figure \ref{fig:siege_pre_api_transfer_rate} shows the transaction rate.
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/performance.png}
-\caption{\label{fig:performance} Result of Performance Test with Siege}
+\includegraphics[width=\textwidth]{figures/siege_predictions_api_availability_against_users.pdf}
+\caption{\label{fig:siege_pre_api_availability} Historical \& Current Timetables API Availability against no. of simultaneous users}
 \end{figure}
 
-\todo[inline]{plot graph from results}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/siege_predictions_api_response_time_against_users.pdf}
+\caption{\label{fig:siege_pre_api_response_time} Historical \& Current Timetables API Response Time (seconds) against no. of simultaneous users}
+\end{figure}
 
-\begin{verbatim}
-Transactions is the number of server hits. In the example, 25 simulated users [ -c25 ] each hit the server with 10 repetitions [ -r10 ], a total of 250 transactions.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/siege_predictions_api_transfer_rate_against_users.pdf}
+\caption{\label{fig:siege_pre_api_transfer_rate} Historical \& Current Timetables API Transaction Rate against no. of simultaneous users}
+\end{figure}
 
-Elapsed time is the duration of the entire siege test. This is measured from the time the user invokes siege until the last simulated user completes its transactions. Shown above, the test took 14.67 seconds to complete.
+\subsubsection{Reference Timetable API Performance}
+\par The reference timetable API endpoint can handle about 150 users to send requests concurrently. The average response time is about 4.5 seconds. Figure \ref{fig:siege_tfl_api_availability}, \ref{fig:siege_tfl_api_response_time}, and \ref{fig:siege_tfl_api_transfer_rate} show the test results.
 
-Data transferred is the sum of data transferred to every siege simulated user. It includes the header information as well as content. Because it includes header information, the number reported by siege will be larger then the number reported by the server. In internet mode, which hits random URLs in a configuration file, this number is expected to vary from run to run.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/siege_tfl_api_availability_against_users.pdf}
+\caption{\label{fig:siege_tfl_api_availability} Reference Timetables API Availability against no. of simultaneous users}
+\end{figure}
 
-Response time is the average time it took to respond to each simulated user’s requests.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/siege_tfl_response_time_against_users.pdf}
+\caption{\label{fig:siege_tfl_api_response_time} Reference Timetables API Response Time (seconds) against no. of simultaneous users}
+\end{figure}
 
-Transaction rate is the average number of transactions the server was able to handle per second, in a nutshell: transactions divided by elapsed time.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/siege_tfl_transfer_rate_against_users.pdf}
+\caption{\label{fig:siege_tfl_api_transfer_rate} Reference Timetables API Transaction Rate against no. of simultaneous users}
+\end{figure}
 
-Throughput is the average number of bytes transferred every second from the server to all the simulated users.
-
-Concurrency is average number of simultaneous connections, a number which rises as server performance decreases.
-
-Successful transactions is the number of times the server returned a code less then 400. Accordingly, redirects are considered successful transactions.
-\end{verbatim}
+% \begin{figure}
+% \centering
+% \includegraphics[width=\textwidth]{figures/performance.png}
+% \caption{\label{fig:performance} Result of Performance Test with Siege}
+% \end{figure}
 
 \section{Accuracy of Predictions}
+\todo[inline]{To do}
 How accurate are the predictions?
 \subsection{Compare predictions to real data}
 We can compare the predictions generated to the live bus arrivals data stored in the arrivals table. We can calculate the standard deviation of the difference in the predicted time and actual arrival time. This value will be the direct indicator of the accuracy of the predictions.
-
-
-\section{User feedback on UI}
-\par On the
-How effective is it at warning delay?
 
