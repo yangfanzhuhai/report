@@ -1,7 +1,7 @@
 %!TEX root = report.tex
 \section{Generating Reference Timetable}
 \label{sec: official_tfl_timetable}
-
+\todo[inline]{table indexing}
 For each day of the week, there are a predefined number of running the give route. We used the \texttt{VehicleJourneys} as a starting point to retrieve the departure time of the actual vehicle from the terminal. We then retrieved the corresponding \texttt{JourneyPattern}, and obtained the travel time between each neighbouring stops on the route for the given vehicle journey, to compute the cumulative travel times throughout the route.
 
 The above computation was performed on each XML file to generate the actual arrival time and travel time for each vehicle trip at each stop in the route throughout the day. We grouped the bus travel time by the hour that the arrival time falls in, and find the average bus travel time between every pair of the neighbouring stops for the given hour of the given day of the week. The results of this computation was stored in the \texttt{delay\_tfl\_timetable} table (Table \ref{table:delay_tfl_timetable}).

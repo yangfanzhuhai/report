@@ -1,9 +1,11 @@
 %!TEX root = report.tex
 \chapter{Evaluation}
 \label{ch:evaluation}
-\section{Accuracy of Live Bus Arrivals API Stream}
+\par This chapter documented the evaluations of the API endpoints. We first quantified the accuracy of the \acrshort{tfl} Live Bus Arrivals API. We then tested the correctness and performance of our data service API endpoints. Lastly, we evaluated the accuracy of the generated bus timetables.
+
+\section{Accuracy of TfL Live Bus Arrivals API}
 \label{sec:tfl_stream_accuracy}
-\par The Tfl Live Bus Arrivals API Stream updates the bus arrival times every 30 seconds. This means that the bus arrival predictions for the current stop would get more and more accurate as the bus approaches the stop. This is because any error in earlier predictions would be incrementally corrected at every update as the location of the bus gets refreshed.
+\par The Tfl Live Bus Arrivals API updates the bus arrival times every 30 seconds. This means that the accuracy of the bus arrival predictions for the current stop will improve gradually as the bus approaches the stop. This is because any error in earlier predictions would be incrementally corrected at every update as the location of the bus gets refreshed.
 
 \subsection{Test for Accuracy}
 \par We evaluated the accuracy of these predictions by the following steps:
@@ -28,12 +30,12 @@ next 20 - 25 mintues & -174.7177 \\
 next 25 - 30 minutes & -166.1368 \\
 \bottomrule
 \end{tabular}
-\caption{Live Bus Arrivals API Stream Accuracy - A negative delta indicates the bus came later than the predicted time}
+\caption{Live Bus Arrivals API Accuracy - A negative delta indicates the bus came later than the predicted time}
 \label{table:countdown_evaluation}
 \end{table}
 
 \subsection{Test Result}
-\par Table \ref{table:countdown_evaluation} shows that buses usually came later than the predictions provided by the Live Bus Arrivals API Stream. For the buses that were predicted to due in the next 5 minutes, they usually came less than one minute later than the predicted arrival time. We took this finding into consideration when testing the accuracy of our current and historical timetable by only choosing buses that are due within the next 5 minutes as tracking targets.
+\par Table \ref{table:countdown_evaluation} shows that buses usually came later than the predictions provided by the Live Bus Arrivals API. For the buses that were predicted to arrive in the next 5 minutes, they usually came less than one minute later than the predicted arrival time. We took this finding into consideration when testing the accuracy of our current and historical timetable by only choosing buses that are due within the next 5 minutes as tracking targets.
 
 \section{Correctness and Performance of the API}
 \subsection{Tool}
@@ -55,68 +57,89 @@ next 25 - 30 minutes & -166.1368 \\
 \par We carried out the siege test with various number of concurrent users ranging from 50 to 500, on a list of URLs with randomly selected parameters. We collected the test results and plotted the figures for availability, response time, and transaction rates \cite{siege_manual}. The metrics are defined as:
 
 \begin{itemize}
-  \item Response time is the average time it took to respond to each simulated user’s requests.
+  \item \texttt{Response time} is the average time it took to respond to each simulated user’s requests.
 
-  \item Transaction rate is the average number of transactions the server was able to handle per second, in a nutshell: transactions divided by elapsed time.
+  \item \texttt{Transaction rate} is the average number of transactions the server was able to handle per second, in a nutshell: transactions divided by elapsed time.
 
-  \item Successful transactions is the number of times the server returned a code less then 400. Accordingly, redirects are considered successful transactions.
+  \item \texttt{Successful transactions} is the number of times the server returned a code less than 400. Accordingly, redirects are considered successful transactions.
 
-  \item Avalability is the percentage of successful transactions over the total number of server hits.
+  \item \texttt{Avalability} is the percentage of successful transactions over the total number of server hits.
 \end{itemize}
 
 
 \subsubsection{Historical \& Current Timetables API Performance}
 
-\par We found out that currently, the server could reliably handle about 100 users to send requests concurrently, with an average response time of 15 seconds. Figure \ref{fig:siege_pre_api_availability} shows that the availability drops below 100\% after when there are more than 100 users accessing the API simultaneously. Figure \ref{fig:siege_pre_api_response_time} shows the response time and Figure \ref{fig:siege_pre_api_transfer_rate} shows the transaction rate.
+\par Figure \ref{fig:siege_pre_api_availability} shows that the \texttt{availability} drops below 100\% when there were more than 100 users accessing the API simultaneously. We used this as a benchmark for the number of uses the current server can reliably handle. Figure \ref{fig:siege_pre_api_response_time} shows that the average \texttt{response time} for 100 users is approximately 15 seconds, and increases as the number of users increases. Figure \ref{fig:siege_pre_api_transfer_rate} shows that the \texttt{transaction rate} for 100 users is about 5.5 transactions per second.
+
+\par The slow response time was probably due to the number of databases query required to form a response. One databases query was needed for every pair of neighbouring stops in the downstream stop sequence to retrieve the timetable entry. This could potentially be reduced by
+\todo[inline]{how to reduce this?}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/siege_predictions_api_availability_against_users.pdf}
+\includegraphics[width=0.8\textwidth]{figures/siege_predictions_api_availability_against_users.pdf}
 \caption{\label{fig:siege_pre_api_availability} Historical \& Current Timetables API Availability against no. of simultaneous users}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/siege_predictions_api_response_time_against_users.pdf}
+\includegraphics[width=0.8\textwidth]{figures/siege_predictions_api_response_time_against_users.pdf}
 \caption{\label{fig:siege_pre_api_response_time} Historical \& Current Timetables API Response Time (seconds) against no. of simultaneous users}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/siege_predictions_api_transfer_rate_against_users.pdf}
+\includegraphics[width=0.8\textwidth]{figures/siege_predictions_api_transfer_rate_against_users.pdf}
 \caption{\label{fig:siege_pre_api_transfer_rate} Historical \& Current Timetables API Transaction Rate against no. of simultaneous users}
 \end{figure}
 
 \subsubsection{Reference Timetable API Performance}
-\par The reference timetable API endpoint can handle about 150 users to send requests concurrently. The average response time is about 4.5 seconds. Figure \ref{fig:siege_tfl_api_availability}, \ref{fig:siege_tfl_api_response_time}, and \ref{fig:siege_tfl_api_transfer_rate} show the test results.
+\par Figure \ref{fig:siege_tfl_api_availability} shows that the \texttt{availability} drops below 100\% when there were more than 150 users sending requests to the Reference Timetable API endpoint concurrently. The average \texttt{response time} for 150 users is about 4.5 seconds (Figure \ref{fig:siege_tfl_api_response_time}), and the \texttt{transaction rate} is approximately 27 transactions per second (Figure \ref{fig:siege_tfl_api_transfer_rate}). The performance of this endpoint is better as every request involves only one databases query.
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/siege_tfl_api_availability_against_users.pdf}
+\includegraphics[width=0.8\textwidth]{figures/siege_tfl_api_availability_against_users.pdf}
 \caption{\label{fig:siege_tfl_api_availability} Reference Timetables API Availability against no. of simultaneous users}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/siege_tfl_response_time_against_users.pdf}
+\includegraphics[width=0.8\textwidth]{figures/siege_tfl_response_time_against_users.pdf}
 \caption{\label{fig:siege_tfl_api_response_time} Reference Timetables API Response Time (seconds) against no. of simultaneous users}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/siege_tfl_transfer_rate_against_users.pdf}
+\includegraphics[width=0.8\textwidth]{figures/siege_tfl_transfer_rate_against_users.pdf}
 \caption{\label{fig:siege_tfl_api_transfer_rate} Reference Timetables API Transaction Rate against no. of simultaneous users}
 \end{figure}
 
-% \begin{figure}
-% \centering
-% \includegraphics[width=\textwidth]{figures/performance.png}
-% \caption{\label{fig:performance} Result of Performance Test with Siege}
-% \end{figure}
-
 \section{Accuracy of Predictions}
-\todo[inline]{To do}
-How accurate are the predictions?
-\subsection{Compare predictions to real data}
-We can compare the predictions generated to the live bus arrivals data stored in the arrivals table. We can calculate the standard deviation of the difference in the predicted time and actual arrival time. This value will be the direct indicator of the accuracy of the predictions.
+\label{sec:prediction_accuracy}
+\par To evaluate the accuracy of the bus journey time predictions, we ran tests to compare the actual bus travel times with the historical, current, and reference timetables respectively. We achieved this by first saving the predicted bus journey times from the two endpoints for a given vehicle. We then searched the databases for the actual arrival time records for the vehicle at each downstream stops. For each test case, we ran through the steps below:
+
+\begin{enumerate}
+  \item \textbf{Saving predicted bus journey times}:
+  \begin{enumerate}
+    \item Fix day of the week and hour of the day to be the current value when the test was run.
+    \item Generate random parameters for the route, bus direction, current starting stop on the route.
+    \item Generate the URL and send request to obtain the next vehicle arrival time for the given route at the given stop from the \acrshort{tfl} Live Bus Arrivals API. If the next vehicle is due in more than 5 minutes later, repeat steps 1(a) and 1(b) until there is a case with a next vehicle due within 5 minutes.
+    \item  Generate the historical \& current, and reference timetable URLs with the same set of parameters.
+    \item Send requests to the above URLs to obtain a snapshot of the reference, historical and current bus travel timetables for the given route at the given hour of the given day.
+    \item Save the responses for comparison with the actual arrivals data later.
+  \end{enumerate}
+  \item Wait for a few hours to allow the target vehicle to travel to the terminal. The arrival times for the target vehicle at each downstream stop should have been recorded in the database.
+  \item \textbf{Comparing predictions to actual travel times}:
+  \begin{enumerate}
+    \item For each target vehicle, retrieve its actual arrival times at each downstream stop from the given starting stop.
+    \item Compute the actual bus travel time in seconds between the given starting stop and each downstream stop.
+    \item Compare the actual bus travel times with the reference, historical, and current bus travel times for each pair of the starting stop and ending stop respectively.
+  \end{enumerate}
+\end{enumerate}
+
+\par We collected 154 test cases throughout the day on 12 June 2015. Each test case consists of a list of travel times from the starting stop to each downstream stop. There were 3362 pair of stops in total. We ploted the probability density graph to compare the reference, historical and current bus travel times with the actual bus travel times.
+\todo[inline]{insert graph}
+
+\par We found that the individual predictions do not give satisfactory accuracy.
+
+
 
