@@ -20,7 +20,7 @@
 \begin{table}
 \centering
 \begin{tabular}{@{}lr@{}} \toprule
-Predictions for & Average Delta (Seconds) \\ \midrule
+TfL Live Bus Arrivals for & Mean Delta (Seconds) \\ \midrule
 next 0 - 3 mintues & -34.8112 \\
 next 0 - 5 mintues & -45.4951 \\
 next 5 - 10 mintues & -97.2584 \\
@@ -35,6 +35,14 @@ next 25 - 30 minutes & -166.1368 \\
 \end{table}
 
 \subsection{Test Result}
+\par Table \ref{table:countdown_evaluation} shows that buses usually came later than the predictions provided by the TfL Live Bus Arrivals API. For the buses that were predicted to arrive in the next 5 minutes, they usually came less than one minute later than the predicted arrival time. The distribution of the difference between the \acrshort{tfl} Live Bus Arrivals API and the actual bus arrival times is shown in Figure \ref{fig:countdown}. We can see that the predictions for the next 5 mintes have smaller errors compared to the restas the peak is much higher near zero errors. We took this finding into consideration when testing the accuracy of our current and historical timetable by only choosing buses that are due within the next 5 minutes as tracking targets.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/countdown.png}
+\caption{\label{fig:countdown} Delta Distribution of TfL Live Bus Arrivals API}
+\end{figure}
+
 
 \section{Correctness and Performance of the API}
 \subsection{Tool}
@@ -70,6 +78,7 @@ next 25 - 30 minutes & -166.1368 \\
 
 \par Figure \ref{fig:siege_pre_api_availability} shows that the \texttt{availability} drops below 100\% when there were more than 100 users accessing the API simultaneously. We used this as a benchmark for the number of uses the current server can reliably handle. Figure \ref{fig:siege_pre_api_response_time} shows that the average \texttt{response time} for 100 users is approximately 15 seconds, and increases as the number of users increases. Figure \ref{fig:siege_pre_api_transfer_rate} shows that the \texttt{transaction rate} for 100 users is about 5.5 transactions per second.
 
+\textbf{Cause of slow response}. The slow response time was probably due to the number of databases query required to form a response. One databases query was needed for every pair of neighbouring stops in the downstream stop sequence to retrieve the timetable entry. One potential approach to reduce the number of databases query is to produce the bus journey timetables by route. In this case, only one query would be sufficient for each request. The tradeoff is that the tables will be larger as there will be multiple entries for the same pair of neighbouring stops on different routes. We discussed other potential improvement for performance in Chapter \ref{ch:future_work}.
 
 \begin{figure}
 \centering
