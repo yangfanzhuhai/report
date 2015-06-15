@@ -6,16 +6,15 @@
 
 \section{Implementation}
 \subsection{AugularJS Framework}
-\par We chose to use the AngularJS Framework \cite{angularjs} with UI Bootstrap \cite{bootstrap} to build the frontend of the application. This was because AngularJS employs a clear Model-View-Controller structure, and has a wide range of packages to build extensions with. We used \texttt{Google Maps API} and \texttt{ui-router} extensively.
-\todo[inline]{add references}
+\par We chose to use the AngularJS Framework \cite{angularjs} with UI Bootstrap \cite{bootstrap} to build the front-end of the application. This was because AngularJS employs a clear Model-View-Controller structure, and has a wide range of packages to build extensions with. We used \texttt{Google Maps API} \cite{angular_google_maps} and \texttt{ui-router} \cite{ui_router} extensively.
 
 \subsection{Development \& Deployment Pipeline}
-\par We used Yeoman \cite{yeoman}, a web application scaffolding tool, to organise and manage scripts and files. We also used Grunt \cite{grunt}, a Javascript task runner to manage the build and delopment process.
+\par We used Yeoman \cite{yeoman}, a web application scaffolding tool, to organise and manage scripts and files. We also used Grunt \cite{grunt}, a Javascript task runner to manage the build and deployment process.
 
 \par For deployment, we created a Grunt task to run tests, minify the javascript files, and copy the minified version to the production server.
 
-\section{Frontend Walkthrough}
-\par The web application has a simple user interface. It divides the screen space into 2 parts, the top half consists of a map area, and the bottom half an information panel. We deployed the frontend web to \url{http://delay.doc.ic.ac.uk/}.
+\section{Front-end User Guide}
+\par The web application has a simple user interface. It divides the screen space into 2 parts, the top half consists of a map area, and the bottom half an information panel. We deployed the front-end web to \url{http://delay.doc.ic.ac.uk/}.
 
 \subsection{Landing Page}
 
@@ -25,7 +24,7 @@
 \caption{\label{fig:landing_page} Web Application Langding Page}
 \end{figure}
 
-\par On load, the app will attempt to obtain the current location of the device, and center the map on it. If the current location is not available, then the default map centered on London will be loaded (Figure \ref{fig:landing_page}).
+\par On load, the app will attempt to obtain the current location of the device, and centre the map on it. If the current location is not available, then the default map centred on London will be loaded (Figure \ref{fig:landing_page}).
 
 
 \subsection{Nearby Bus Stops Arrival}
@@ -50,7 +49,7 @@
 \par For each available route at a nearby bus stop, users could check the historical, current, and reference travel time to each downstream stops by clicking the red button to select a specific route for details. The app will make requests to the \texttt{Historical \& Current} and \texttt{Reference} endpoints with the current day of the week, hour of the day, stop code, and direction of the bus route as parameters.
 
 
-\par After the endpoints return results, a list of the downstream stops with the corresponding historical, current, and reference travel time from the current stop will be displayed in the informantion panel.
+\par After the endpoints return results, a list of the downstream stops with the corresponding historical, current, and reference travel time from the current stop will be displayed in the information panel.
 
 \par We placed an additional column of the bus travel times as a linear combination of the reference, historical, and current bus travel times. The \texttt{pre - ref} column indicates the difference between the combine timetable and the reference timetable travel times. A positive delFigure \ref{fig:timetable_view} shows bus travel time bus 70 starting from Kensington Road.
 

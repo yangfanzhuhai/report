@@ -16,7 +16,7 @@
   \item \textbf{Historical Timetable} How long does it usually take?
 \end{itemize}
 
-\par Since the reference timetable shows the typical bus journey time, the historical timetable should converge to the reference timetable over time. The current timetable shows the most relevant bus travel time at the observation point, a significant increase in travel time compared to the historical or refernece timetables would indicate a bus delay.
+\par Since the reference timetable shows the typical bus journey time, the historical timetable should converge to the reference timetable over time. The current timetable shows the most relevant bus travel time at the observation point, a significant increase in travel time compared to the historical or reference timetables would indicate a bus delay.
 
 \subsection{Reference Timetable}
 \par We extracted the average bus travel time between every pair of neighbouring stops for every route during every hour of the day for every day of the week from the \acrshort{tfl} Journey Planner Bus Timetables. This is discussed in Section \ref{sec: official_tfl_timetable}.
@@ -25,7 +25,7 @@
 \par We collected the live bus arrival times for the past 1 hour, and stored the final bus arrival times for each bus at each stop. We then found out the travel time of each bus between every pair of neighbouring stops for the given hour. Next, we calculated the average travel time between each pair of neighbouring bus stops. This serves as a prediction for how long the bus currently takes to travel between two neighbouring stops. See implementation details in Section \ref{sec:current_timetable_generation}.
 
 \subsection{Historical Timetable}
-\par We stored the current timetable generated at each hour, and grouped them by the hour of the day for the same day of the week. We then calculated the average bus travel time between each pair of neighbouring stops for each hour of the day in each day of the week. For example, the average bus travel time between stop A and stop B for 3pm on Wednesday is the average travel time for all the bus trips between these two stops between 2pm to 3pm in the past Wednesdays. More details cound be found in Section \ref{sec:historical_timetable}.
+\par We stored the current timetable generated at each hour, and grouped them by the hour of the day for the same day of the week. We then calculated the average bus travel time between each pair of neighbouring stops for each hour of the day in each day of the week. For example, the average bus travel time between stop A and stop B for 3pm on Wednesday is the average travel time for all the bus trips between these two stops between 2pm to 3pm in the past Wednesdays. More details can be found in Section \ref{sec:historical_timetable}.
 
 \section{Contributions}
 \par We provided the above mentioned three timetables as a data service API (Chapter \ref{ch:data_service}) and designed a demonstrative web application that allows users to check current bus delays from a given bus stop (Chapter \ref{ch:mobile_app}).

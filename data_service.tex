@@ -2,7 +2,7 @@
 \chapter{Delay Data Service}
 \label{ch:data_service}
 \section{Overview}
-\par To enable structured query of the reference, current, and historical timetables, we created a REST data service \acrshort{api}. These endpoints are available within the imperial network for other developers to use.
+\par To enable structured query of the reference, current, and historical timetables, we created a REST data service \acrshort{api}. These endpoints are available within the Imperial network for other developers to use.
 
 \section{Django Framework}
 \par We used Django Framework \cite{django_framework} for the backend of this project. It is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. We chose it for the following advantages:
@@ -21,7 +21,7 @@
 
 \subsection{Web Server}
 \label{sec:gunicorn}
-We chose to use Nginx\cite{nginx} as the web server and Gunicorn\cite{gunicorn} as the Python Web Server Gateway Interface HTTP Server. Nginx was chosen over Apache Web Server as it was more widely used with Django and Gunicorn setup, therefore there was more support articles available online for reference \cite{nginx_gunicorn_django}.
+We chose to use Nginx\cite{nginx} as the web server and Gunicorn\cite{gunicorn} as the Python Web Server Gateway Interface HTTP Server. Nginx was chosen over Apache Web Server as it was more widely used with Django and Gunicorn setup; therefore, the supporting documentation was more readily available \cite{nginx_gunicorn_django}.
 
 \section{API Endpoints}
 \par We built the backend using Django framework and Django REST framework, and exposed the following 3 endpoints for users to access data. The base URL for all endpoints is \url{http://delay.doc.ic.ac.uk:5000}.

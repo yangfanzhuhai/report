@@ -15,7 +15,7 @@
   \item \textit{LineName.} This is the route number that is displayed on the front of the bus on any publicity advertising the route.
   \item \textit{DirectionID.} The direction of the bus.
   \item \textit{VehicleID.} The unique identifier of the vehicle.
-  \item \textit{TripID.} The identifer of the specific trip that the prediction is for.
+  \item \textit{TripID.} The identifier of the specific trip that the prediction is for.
   \item \textit{EstimatedTime.} This is the predicted time of arrival for the vehicle at a specific stop.
   \item \textit{ExpireTime.} This is the time at which the corresponding prediction is no longer valid and should stop being displayed.
 \end{itemize}
@@ -27,7 +27,7 @@
 
 \par Each data entry in the return result contains an estimated arrival time for each bus journey at a given bus stop. We assume that the actual bus arrival time is the the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
 
-\par Since sometimes the clear signal is lost for certain entries, we assumed the actual bus arrival time is the latest recorded estimated arrival time, when there are no more updates 15 minutes after the expire time. This means that we have not received any new updates for the given bus at a given stop 15 minutes after the last estmated arrival time.
+\par Since sometimes the clear signal is lost for certain entries, we assumed the actual bus arrival time is the latest recorded estimated arrival time, when there are no more updates 15 minutes after the expire time. This means that we have not received any new updates for the given bus at a given stop 15 minutes after the last estimated arrival time.
 
 \par As we would like to only store the actual bus arrival times, we keep a local copy of the current query result using the Python \texttt{pickle} module\cite{pickle}, and only update the databases when the most arrival time for the given bus at the given stop has expired for more than 15 minutes.
 
@@ -36,7 +36,7 @@
 \begin{enumerate}
   \item Load the local arrivals objects if there exists a copy.
   \item Pull the new TfL arrivals predictions.
-  \item Update the loacl arrivals objects with the new predictions.
+  \item Update the local arrivals objects with the new predictions.
   \item For arrival entries that have expired for more than 15 minutes, remove these entries from the local copy, and store them in the \texttt{delay\_arrivals} table in the databases.
 \end{enumerate}
 

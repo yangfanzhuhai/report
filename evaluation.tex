@@ -14,7 +14,7 @@
   \item We took a snapshot of all the bus arrivals predictions for the next 30 minutes at a given recorded time (2015-06-04 11:24:37).
   \item We grouped these prediciton entries by the difference between the predicted arrival time and the recorded time at a 5-minute interval. For example, the predictions for the buses arriving in the next 5 minutes, next 5 to 10 minutes, and next 10 to 15 minutes, etc. We added an additional group for the next 0 - 3 minutes for reference.
   \item After 3 hours, we compared each arrival prediction entry in the snapshot table against the actual arrival data we stored for generating the current timetable. The difference between the predicted and the actual arrival time gives an indication of the prediction accuracy. We stored this difference as the delta value. A negative delta indicates the bus came later than the predicted time.
-  \item We calcuated the average delta value for each group, and created Table \ref{table:countdown_evaluation}.
+  \item We calcuated the mean delta for each group, and created Table \ref{table:countdown_evaluation}.
 \end{itemize}
 
 \begin{table}
@@ -35,7 +35,6 @@ next 25 - 30 minutes & -166.1368 \\
 \end{table}
 
 \subsection{Test Result}
-\par Table \ref{table:countdown_evaluation} shows that buses usually came later than the predictions provided by the Live Bus Arrivals API. For the buses that were predicted to arrive in the next 5 minutes, they usually came less than one minute later than the predicted arrival time. We took this finding into consideration when testing the accuracy of our current and historical timetable by only choosing buses that are due within the next 5 minutes as tracking targets.
 
 \section{Correctness and Performance of the API}
 \subsection{Tool}
@@ -71,8 +70,6 @@ next 25 - 30 minutes & -166.1368 \\
 
 \par Figure \ref{fig:siege_pre_api_availability} shows that the \texttt{availability} drops below 100\% when there were more than 100 users accessing the API simultaneously. We used this as a benchmark for the number of uses the current server can reliably handle. Figure \ref{fig:siege_pre_api_response_time} shows that the average \texttt{response time} for 100 users is approximately 15 seconds, and increases as the number of users increases. Figure \ref{fig:siege_pre_api_transfer_rate} shows that the \texttt{transaction rate} for 100 users is about 5.5 transactions per second.
 
-\par The slow response time was probably due to the number of databases query required to form a response. One databases query was needed for every pair of neighbouring stops in the downstream stop sequence to retrieve the timetable entry. This could potentially be reduced by
-\todo[inline]{how to reduce this?}
 
 \begin{figure}
 \centering

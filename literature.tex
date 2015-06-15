@@ -1,6 +1,6 @@
 %!TEX root = report.tex
 \section{Literature}
-
+\label{sec:literature}
 \subsection{Overview}
 \par We did some literature review on the conventional methods used to predict bus arrival times. They include regression models, Kalman filters models, \acrfull{ann} models, K-nearest neighbours models, and analytical approaches.
 
@@ -9,17 +9,25 @@
 
 \par The regression models require the independent variables to be uncorrelated to each other. It is difficult to provide such a set of variables in the context of bus arrivals predictions. This is because most of the independent variables are correlated (e.g. the number of intermediate bus stops and the number of signalised intersubsections). Therefore, defining a set of uncorrelated independent variables is the main challenge of building regression models.
 
-\subsection{Artificial Neural Network}
-\par \acrshort{ann} models are used to estimate functions that can depend of a large number of inputs by adjusting their parameters through message passing between neuron layers. Building an \acrshort{ann} model involve a training process where dependent variables and prediction results are fed in. The advantage of ANN is that the variables can be correlated, whereas the main disadvantage is that the model training process can take very long (more than 10 hours). Mazloumi (2009) build an artificial neural network with data collected by the Sydney Coordinated Adaptive Traffic System at intermediate signalised intersubsections and schedule adherence to predict bus travel time\cite{ann}.
+\subsection{Artificial Neural Network (ANN)}
+\par \acrshort{ann} models are used to estimate functions that can depend of a large number of inputs by adjusting their parameters through message passing between neuron layers. An \acrshort{ann} model is trained with training examples including dependent variables and prediction results. The advantage of ANN is that the variables can be correlated, whereas the main disadvantage is that the model training process can take very long (more than 10 hours). Mazloumi (2009) built an artificial neural network with data collected by the Sydney Coordinated Adaptive Traffic System at intermediate signalised intersubsections and schedule adherence to predict bus travel time \cite{ann}.
 
 \subsection{Kalman Filters}
-\par The Kalman filter, also known as linear quadratic estimation(LQE), is a linear recursive predictive algorithm. It starts with a primary estimate and allows parameters to be tuned with each new measurement, in order to find the optimal estimates of unknown variables \cite{kalman_filters}. It can respond to dynamic conditions of a modelled process, and has been used for dynamic travel time prediction models. Chen et al. (2005) used Kalman filters to predict arrival time with taking into account the effect of schedule recovery impact \cite{kalman_dynamic_schedule}.
+\par The Kalman filter, also known as linear quadratic estimation (LQE), is a linear recursive predictive algorithm. It starts with a primary estimate and allows parameters to be tuned with each new measurement, in order to find the optimal estimates of unknown variables \cite{kalman_filters}. It can respond to dynamic conditions of a modelled process, and has been used for dynamic travel time prediction models. Chen \textit{et al.} (2005) used Kalman filters to predict arrival time with taking into account the effect of schedule recovery impact \cite{kalman_dynamic_schedule}.
 
-\subsection{K-Nearest Neighbours Regression}
-\par \acrfull{knn} regression algorithm takes in the \textit{k} closest training exmaples and produces an output of the property value based of the average of the values of its neighbours. Baker C. M. and Nied A. C. (2013) created models to predict arrival times using \acrshort{knn}, Kernel Regression and seven sets of features\cite{knn_one_bus_away}.
+\subsection{K-Nearest Neighbours Regression (KNN)}
+\par \acrfull{knn} regression algorithm takes in the \textit{k} closest training exmaples and produces an output of the property value based of the average of the values of its neighbours. Baker C. M. and Nied A. C. (2013) created models to predict arrival times using \acrshort{knn}, Kernel Regression and seven sets of features~\cite{knn_one_bus_away}.
 
 \subsection{Analytical Approaches}
-\par Analytical approaches were usually developed based on specific available data sets or special conditions. For example, Sun et al.(2007) proposed an algorithm that firsly tracks the bus to obtain the distance to each bus stop, and then predicts bus arrival time using the average speed in various temporal and spatial segmentations \cite{analytical_approach}.
+\par Analytical approaches are usually developed based on specific available data sets or special conditions. For example, Sun et al.(2007) proposed an algorithm that first tracks the bus to obtain the distance to each bus stop, and then predicts bus arrival time using the average speed in various temporal and spatial segmentations \cite{analytical_approach}.
 
 \subsection{Summary on Literature Review}
-\par While there are many available methods to estimate bus delays, we have not seen any implementations specificaly for London. To make use of the \acrshort{tfl} open data, we decided to use an analytical approach to predict London bus delays.
+\par Mehtods such as Regression, ANN, KNN and Kalman Filters mainly focus on defining and collecting information on factors that will cause a change in the bus journey time. The information is then processed to produce a prediction. Such factors include weather conditions, passenger flow, distance between bus stops, and the speed of the bus vehicle, etc.
+
+Given the large size of London bus network, predicting bus journey times by discovering and analysing these factors is complicated as there are a lot of uncertainties on the road, and there is measuring error for each data point for each factor in consideration.
+
+Since we needed to collect data for analysis and build the prediction model from scratch, we decided to use an analytical approach which is developed based on specific available data sets (\acrshort{tfl} Live Bus Arrivals), and is relatively simpler to implement at this stage. The other methods can be used to fine-tuned the prediction accuracy as future work.
+
+
+
+
