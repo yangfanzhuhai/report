@@ -53,6 +53,39 @@ end\_stop & varcher(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
 
 \begin{table}
 \centering
+\begin{tabular}{@{}lll@{}} \toprule
+Column Name & Type & Foreign Key\\ \midrule
+id(Primary Key) & int(11)  \\
+start\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
+end\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
+date & DATE \\
+day & varchar(64) \\
+hour & varchar(64) \\
+average\_travel\_time & Decimal \\ \bottomrule
+\end{tabular}
+\caption{delay\_current\_timetable Table Schema}
+\label{table:delay_current_timetable}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{@{}lll@{}} \toprule
+Column Name & Type & Foreign Key\\ \midrule
+id(Primary Key) & int(11)  \\
+start\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
+end\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
+day & varchar(64) \\
+hour & varchar(64) \\
+average\_travel\_time & Decimal \\ \bottomrule
+\end{tabular}
+\caption{delay\_historial\_timetable Table Schema}
+\label{table:delay_historical_timetable}
+\end{table}
+
+
+
+\begin{table}
+\centering
 \begin{tabular}{@{}llp{4cm}p{4cm}@{}} \toprule
 Column Name & Type & Foreign Key & Comments\\ \midrule
 id(Primary Key) & int(11) & & Auto Increment\\ [0.4cm]

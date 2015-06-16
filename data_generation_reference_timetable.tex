@@ -7,40 +7,70 @@ The above computation was performed on each XML file to generate the actual arri
 
 \subsection{Detailed Steps}
 
-\par We used the \texttt{ElementTree} XML API in Python \cite{elementtree} to extract the official bus travel times between stops from the Journey Planner Bus Timetables\cite{open_data_feeds_description}.
+\par We used the \texttt{ElementTree} XML API in Python \cite{elementtree} to extract the official bus travel times between stops from the Journey Planner Bus Timetables\cite{open_data_feeds_description}. Each \acrshort{xml} file contains bus schedule information for one route. We carried out the following steps on each \acrshort{xml} file. To make the steps easier to understand, we took the first bus for route C2 on Saturday morning for example, and included figures of the relevant XML snippets to extract bus travel times. The
 
-\par Each \acrshort{xml} file contains bus schedule information for one route. We carried out the following steps on each \acrshort{xml} file:
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/xml_linename.png}
+\caption{\label{fig:xml_linename} TfL Journey Planner Timtables XML LineName}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/xml_vehicle_journeys.png}
+\caption{\label{fig:xml_vehicle_journeys} TfL Journey Planner Timtables XML VehicleJourney}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/xml_journeypattern.png}
+\caption{\label{fig:xml_journeypattern} TfL Journey Planner Timtables XML JourneyPattern}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/xml_journey_pattern_section.png}
+\caption{\label{fig:xml_journey_pattern_section} TfL Journey Planner Timtables XML JourneyPatternSection}
+\end{figure}
 
 \begin{enumerate}
-  \item Obtain the route from \texttt{Services} $\rightarrow$ \texttt{Service} $\rightarrow$ \texttt{Lines} $\rightarrow$ \texttt{Line} $\rightarrow$ \texttt{LineName}
-  \item For each \texttt{VehicleJourneys} $\rightarrow$ \texttt{VehicleJourney}, extract the followings:
+  \item Obtain the route from \texttt{Services} $\rightarrow$ \texttt{Service} $\rightarrow$ \texttt{Lines} $\rightarrow$ \texttt{Line} $\rightarrow$ \texttt{LineName}, \textit{C2}. (Figure \ref{fig:xml_linename})
+  \item For each \texttt{VehicleJourneys} $\rightarrow$ \texttt{VehicleJourney} (Figure \ref{fig:xml_vehicle_journeys}), extract the followings:
   \begin{enumerate}
-    \item The departure time from \texttt{DepartureTime}
-    \item The days of the week that this journey operates on from \texttt{OperatingProfile} $\rightarrow$ \texttt{RegularDayType} $\rightarrow$ \texttt{DaysOfWeek}
-    \item The corresponding journey pattern reference from \texttt{JourneyPatternRef}
+    \item The departure time from \texttt{DepartureTime}, \textit{05:45:00}.
+    \item The days of the week that this journey operates on from \texttt{OperatingProfile} $\rightarrow$ \texttt{RegularDayType} $\rightarrow$ \texttt{DaysOfWeek}, \textit{Saturday}.
+    \item The corresponding journey pattern reference from \texttt{JourneyPatternRef}, \textit{JP\_21-C2-\_-y05-33625-1-O-1}.
   \end{enumerate}
-  \item Each \texttt{JourneyPatternRef} maps to one Journey Pattern Section. This mapping is stored in \texttt{Services} $\rightarrow$ \texttt{Service} $\rightarrow$ \texttt{StandardService} $\rightarrow$ \texttt{JourneyPattern}.
+  \item Each \texttt{JourneyPatternRef} maps to one Journey Pattern Section. This mapping is stored in \texttt{Services} $\rightarrow$ \texttt{Service} $\rightarrow$ \texttt{StandardService} $\rightarrow$ \texttt{JourneyPattern} (Figure \ref{fig:xml_journeypattern}).
 
   Retrieve the corresponding Journey Pattern Section Reference as such:
     \begin{enumerate}
       \item Each \texttt{JourneyPattern} element contains an element id, and a sub-element \texttt{JourneyPatternSectionRefs}.
       \item Map each Journey Pattern id to its corresponding \\ \texttt{JourneyPatternSectionRefs} for reference.
-      \item Consult the above mapping to retrieve the Journey Pattern Section Reference for each Journey Pattern Reference found in Step 2(c).
+      \item Consult the above mapping to retrieve the Journey Pattern Section Reference for each Journey Pattern Reference found in Step 2(c). In the example case shown in Figure \ref{fig:xml_journeypattern}, \texttt{JourneyPattern} with \texttt{id=}\textit{JP\_21-C2-\_-y05-33625-1-O-1} has \texttt{JourneyPatternSectionRefs} \textit{JPS\_21-C2-\_-y05-33625-1-1-O}.
     \end{enumerate}
-    \item Next, obtain the bus travel time between every pair of neighbouring stops in the route from the \texttt{JourneyPatternSections}. The detailed steps are as the following:
+    \item Next, obtain the bus travel time between every pair of neighbouring stops in the route from the \texttt{JourneyPatternSections} (Figure \ref{fig:xml_journey_pattern_section}). The detailed steps are as the following:
     \begin{enumerate}
-      \item For each \texttt{JourneyPatternSectionRefs}, find the corresponding \texttt{JourneyPatternSections} $\rightarrow$ \texttt{JourneyPatternSection} with the same id.
+      \item For each \texttt{JourneyPatternSectionRefs}, find the corresponding \texttt{JourneyPatternSections} $\rightarrow$ \texttt{JourneyPatternSection} with the same id, \textit{JPS\_21-C2-\_-y05-33625-1-1-O}.
       \item Each \texttt{JourneyPatternSection} contains multiple \\ \texttt{JourneyPatternTimingLink} sub-elements. Each sub-element contains information for one pair of neighbouring bus stops. Retrieve the following information from each sub-element:
       \begin{enumerate}
-        \item \texttt{From SequenceNumber}
-        \item \texttt{From} $\rightarrow$ \texttt{StopPointRef}
-        \item \texttt{To SequenceNumber}
-        \item \texttt{To} $\rightarrow$ \texttt{StopPointRef}
-        \item \texttt{RunTime}
+        \item \texttt{From SequenceNumber}, \textit{1}.
+        \item \texttt{From} $\rightarrow$ \texttt{StopPointRef}, \textit{490010852S2}.
+        \item \texttt{To SequenceNumber}, \textit{2}.
+        \item \texttt{To} $\rightarrow$ \texttt{StopPointRef}, \textit{490014697S}.
+        \item \texttt{RunTime}, \textit{31 seconds}.
       \end{enumerate}
     \end{enumerate}
-    \item At this point, we have obtained the departure time from the terminal stop for each vehicle journey (Step 2(a)), and the bus travel time between every pair of the neighbouring stops (Step 4(b)v.). We calculated the cumulative bus travel time for each stop, and derived the bus arrival time at each stop for the given vehicle journey.
+    \item After we perform the above steps for every data point, we would have obtained the departure time from the terminal stop  for each vehicle journey (Step 2(a)), and the bus travel time between every pair of the neighbouring stops (Step 4(b)v.). We calculated the cumulative bus travel time for each stop, and derived the bus arrival time at each stop for the given vehicle journey.
     \item We grouped the bus travel time by the hour that the arrival time falls in, and computed the average bus travel time between every pair of the neighbouring stops for the given hour of the given day of the week.
+
+
+\item \begin{verbatim}
+id  route day run sequence  stop_name arrival_time  cumulative_travel_time  departure_time_from_origin  naptan_atco travel_time arrival_hour
+15481187  C2  Saturday  1 2 William Ellis School  2015-01-01 05:45:31 31  2015-01-01 05:45:00 490014697S  31  5
+      \end{verbatim}
+
 \end{enumerate}
 
 

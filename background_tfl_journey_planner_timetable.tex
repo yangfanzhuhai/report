@@ -2,7 +2,13 @@
 \subsection{Journey Planner Bus Timetables}
 The Journey Planner Bus Timetables \cite{open_data_feeds_description} contains information on official bus schedules including stops, routes, departures times, departure frequencies, operational notes, as well as the days on which the services run.
 
-The timetables uses the \acrfull{xml} \cite{xml} format, with the schema defined in \gls{transxchange} \cite{transxchange}, the UK nationwide standard for exchanging bus schedules and related data. For this project, we used the General schema version 2.1\cite{transxchange_downloads_and_schema}\cite{transxchange_schema_2.1_xsd}, the latest available version for download. Each \acrshort{xml} file contains the bus timetables for one route.
+The timetables uses the \acrfull{xml} \cite{xml} format, with the schema defined in \gls{transxchange} \cite{transxchange}, the UK nationwide standard for exchanging bus schedules and related data. For this project, we used the General schema version 2.1\cite{transxchange_downloads_and_schema}\cite{transxchange_schema_2.1_xsd}, the latest available version for download. Each \acrshort{xml} file contains the bus timetables for one route. Figure \ref{fig:xml_components} shows the overview of a timetable \acrshort{xml} file.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{figures/xml_components.png}
+\caption{\label{fig:xml_components} TfL Journey Planner Timetables Sample XML Overview}
+\end{figure}
 
 \subsubsection{Data Structure}
 The \gls{transxchange} timetable model has the following seven basic concepts\cite{transxchange_schema_guide}:

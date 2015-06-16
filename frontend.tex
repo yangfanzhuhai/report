@@ -48,14 +48,7 @@
 
 \par For each available route at a nearby bus stop, users could check the historical, current, and reference travel time to each downstream stops by clicking the red button to select a specific route for details. The app will make requests to the \texttt{Historical \& Current} and \texttt{Reference} endpoints with the current day of the week, hour of the day, stop code, and direction of the bus route as parameters.
 
-
-\par After the endpoints return results, a list of the downstream stops with the corresponding historical, current, and reference travel time from the current stop will be displayed in the information panel.
-
-\par We placed an additional column of the bus travel times as a linear combination of the reference, historical, and current bus travel times. The \texttt{pre - ref} column indicates the difference between the combine timetable and the reference timetable travel times. A positive delFigure \ref{fig:timetable_view} shows bus travel time bus 70 starting from Kensington Road.
-
-\par The coefficients used in the linear combination are derived from regression. This is discussed in Section \ref{sec:prediction_accuracy}.
-
-
+\par After the endpoints return results, a list of the downstream stops with the corresponding historical, current, and reference travel time from the current stop will be displayed in the information panel. The \texttt{current - ref} column indicates the difference between the current timetable and the reference timetable travel times. A positive delta Figure \ref{fig:timetable_view} shows bus travel time bus 70 starting from Kensington Road.
 
 \section{Summary}
 \par The web application shows how the delay prediction data service could be used to inform users of potential delays in buses arriving at any downstream stops on a selected route. This will help bus passengers to make informed decisions when choosing travel mode and bus routes to save time.
