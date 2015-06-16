@@ -2,7 +2,7 @@
 \subsection{Live Bus Arrivals API}
 \par The Live Bus Arrivals API provides the predicted time until a bus is expected to arrive at a stop. This \acrshort{api} is designed to enable application developers to subscribe to live bus information and use this data to develop innovative services\cite{live_bus_api_documentation}.
 
-\par The predictions are generated from London buses locations, tracked using a combination of \acrfull{gps}, roadside transponders, gyrometers to recognise orientation and turns, and software to match all of the information accurately to a point on a street. Next, the bus location information is transmitted back to a control centre which then works out the predicted bus journey time to reach each downstream stop, given typical journey times at that time of the day \cite{quora_generate_countdown}. These arrival predictions are available for the next 30 minutes at any point in time. For example, at 9am, the \acrshort{api} will provide predicted bus arrivals up to 9.30am on the same day. This data is refreshed every 30 seconds \cite{live_bus_api_documentation}.
+\par The predictions are generated from London buses locations, tracked using a combination of \acrfull{gps}, roadside transponders, gyrometers to recognise orientation and turns, and software to match all of the information accurately to a point on a street. Next, the bus location information is transmitted back to a control centre which then works out the predicted bus journey time to reach each downstream stop, given typical journey times at that time of the day \cite{quora_generate_countdown}. These arrival predictions are available for the next 30 minutes from the current time. For example, at 9am, the \acrshort{api} will provide predicted bus arrivals up to 9.30am on the same day. This data is refreshed every 30 seconds \cite{live_bus_api_documentation}.
 
 \par This \acrshort{api} is controlled via a number of different HTTP requests and parameters. A request is structured as follows: \\
 \url{http://server/virtualDirectory/type/version?HTTP parameters}
@@ -12,8 +12,8 @@
 \par This \acrshort{api} service provides two types of request to users:
 
 \begin{itemize}
-  \item \textbf{instant}. The instant requests are made by the client and the server will respond with a single message.
-  \item \textbf{stream}. The streaming requests are made by the client, in response the server will continually serve data to satisfy the request until the connection is terminated.
+  \item \texttt{instant}. The client polls the server and receives the response in a single message.
+  \item \texttt{stream}. The client opens a persistent connection to the server. The server continually serves data to the client until the connection is terminated.
 \end{itemize}
 
 \par The data source for both instant and streaming requests is consistent, ensuring that the data provided to the public remains the same. We used this \acrshort{api} as a source for bus arrival times. See details in Section \ref{sec:collecting_arrival_times}.

@@ -1,11 +1,22 @@
 %!TEX root = report.tex
 \vspace{2in}
 \begin{abstract}
-% Problem
-In London, billions of passengers travel by bus every year. Bus delay is a main concern for passengers when planning their journeys. Currently, there is no data service that provides reliable bus journey time to downstream stops.
-% Your Approach - ?
-\acrfull{tfl} offers data to quantify the deviation in bus journey times from the official timetable. We collected the \acrshort{tfl} live bus arrival times for each bus at each stop, and computed the average historical and current bus journey time between every pair of neighbouring stops on a route.
-% Solution - ?
+% Background
+%% important because of billions of journey - high impact
+In London, billions of passengers travel by bus every year. A significant number of those journeys are delayed.
+%% bus delay - variabilty/uncertainty in travel time - reliability - affects passengers planning / choosing routes - need to leave more buffer time / wasted time from taking a bad route
+This creates uncertainty for passengers who are forced to plan their journeys around variable bus journey timings.
+We set out to provide accurate real-time predictions of bus journey timings that takes into account the situation on the ground.
+% Your Approach
+We collected \acrfull{tfl} bus arrival times for each bus at each stop, and computed the average historical and current bus journey time between every pair of neighbouring stops on a route.
+This allows us to quantify the deviation in bus journey times from the official timetable.
 % Main contributions of paper
-We built a data service \acrshort{api} to provide historical, current, and reference bus journey times for a given hour on a given day of the week. To demonstrate the potential use of our \acrshort{api}, we designed a web application to allow passengers to browse these predicted bus journey times conveniently.
+We built a data service \acrshort{api} to provide this data in the form of historical, current, and reference bus journey times for a given hour on a given day of the week. To demonstrate the potential use of our \acrshort{api}, we designed a web application to allow passengers to browse these predicted bus journey times conveniently.
 \end{abstract}
+
+% Background [2 sentences]
+% Problem
+% Results [~3 sentences]
+% Approach and Solution [main components of solution]
+% Conclusions [2-3 sentences]
+% Main Contributions [look to conclusion]
