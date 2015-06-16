@@ -11,13 +11,13 @@
 \par We supplied the following parameters which specify the fields returned by the \acrshort{api}.
 
 \begin{itemize}
-  \item \textit{StopID.} This is the alphanumeric identifier of a bus stop. It is also known as stop\_code\_lbsl.
-  \item \textit{LineName.} This is the route number that is displayed on the front of the bus on any publicity advertising the route.
-  \item \textit{DirectionID.} The direction of the bus.
+  \item \textit{StopID.} The alphanumeric identifier of a bus stop. It is also known as stop\_code\_lbsl.
+  \item \textit{LineName.} The route number that is displayed on the front of the bus on any publicity advertising the route.
+  \item \textit{DirectionID.} This could be number 1 or 2. Number 1 indicates an outbound journey, and number 2 indicates an inbound journey.
   \item \textit{VehicleID.} The unique identifier of the vehicle.
   \item \textit{TripID.} The identifier of the specific trip that the prediction is for.
-  \item \textit{EstimatedTime.} This is the predicted time of arrival for the vehicle at a specific stop.
-  \item \textit{ExpireTime.} This is the time at which the corresponding prediction is no longer valid and should stop being displayed.
+  \item \textit{EstimatedTime.} The predicted time of arrival for the vehicle at a specific stop. It is in the form of UTC as per Unix epoch in milliseconds. Divide by 1000 to convert to UTC Epoch.
+  \item \textit{ExpireTime.} The time at which the corresponding prediction is no longer valid and should stop being displayed.
 \end{itemize}
 
 \par The resulting query URL is \sloppy \url{http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1?ReturnList=StopID,LineName,DirectionID,VehicleID,TripID,EstimatedTime,ExpireTime}.
@@ -25,7 +25,7 @@
 \subsubsection{Storing Arrival Times}
 \par The TfL Live Bus Arrival Feed is updated every 30 seconds to give a more accurate predictions of the bus arrival times. We send an HTTP request to the above URL every 30 seconds.
 
-\par Each data entry in the return result contains an estimated arrival time for each bus journey at a given bus stop. We assume that the actual bus arrival time is the the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
+\par Each data entry in the return result contains an estimated arrival time for each bus journey at a given bus stop. We assume that the actual bus arrival time is the midpoint between the last estimated arrival time, and the system time when the clear signal (\textit{ExpireTime} = 0) is received.
 
 \par Since sometimes the clear signal is lost for certain entries, we assumed the actual bus arrival time is the latest recorded estimated arrival time, when there are no more updates 15 minutes after the expire time. This means that we have not received any new updates for the given bus at a given stop 15 minutes after the last estimated arrival time.
 
@@ -37,17 +37,68 @@
   \item Load the local arrivals objects if there exists a copy.
   \item Pull the new TfL arrivals predictions.
   \item Update the local arrivals objects with the new predictions.
-  \item For arrival entries that have expired for more than 15 minutes, remove these entries from the local copy, and store them in the \texttt{delay\_arrivals} table in the databases.
+  \item For arrival entries that have expired for more than 15 minutes, remove these entries from the local copy, and store them in the \texttt{delay\_arrivals} table in the databases (Schema shown in Table \ref{table:delay_arrivals_schema}).
 \end{enumerate}
 
-The above steps were implemented in a Python script. Each run of the steps takes approximately 10 to 15 seconds. We re-run the script 15 seconds after the previous run finishes.
+The above steps were implemented in a Python script. The interesting part of the code for step 4 is shown below. Each run of the steps takes approximately 10 to 15 seconds. We re-run the script 15 seconds after the previous run finishes.
 \label{sec:arrivals_daemon}
+
+\begin{verbatim}
+def insert_arrivals_to_db(conn, arrival):
+    cur = conn.cursor()
+    sql_insert = ("INSERT INTO current_arrivals "
+                  "(stop_code_lbsl, route, run, vehicle_id, trip_id, "
+                  "arrival_time, expire_time, arrival_date) "
+                  "VALUES (%s, %s, %s, %s, %s, %s, %s, DATE(%s)) ")
+
+    # Filter out the entries in the cache with 0 expire time
+    # or have not been updated for the past 15 minutes. We assume
+    # these were the actual arrival times for the buses.
+    expired = [v for v in arrival.values()
+               if (v[6] is None or
+                   (v[6] + datetime.timedelta(minutes=15)
+                    <= datetime.datetime.now()))]
+
+    # Filter out the recently updated entries in the cache.
+    arrival = dict((k, v) for k, v in arrival.items()
+                   if (v[6] is not None and
+                       (v[6] + datetime.timedelta(minutes=15)
+                        > datetime.datetime.now())
+                       )
+                   )
+    # Insert the expired arrivals entries to the databases,
+    # and return the recently updated arrivals entries to
+    # store in local cache.
+    for line in expired:
+        cur.execute(sql_insert, line[0:8])
+    return arrival
+\end{verbatim}
+
 
 \subsection{Generating Bus Sequences and Neighbouring Stops}
 \label{sec:bus_stop_locations_routes}
 \par We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the \texttt{delay\_bus\_sequences} table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route. As the sequence information for some routes have gaps, we preprocessed the data by updating the sequence number of the following stops to fill up the gaps. This preprocessing step was done after a few examples verified with the up-to-date TfL routes in the TfL Journey Planner.
 
-\par In order to find out the average travel time between any pair of neighbouring stops, we needed a list of all the neighbouring stops serving by various routes for reference. We extracted this information from the bus routes data, and stored it in the \texttt{delay\_neighbours} table (Table \ref{table:delay_neighbours}). In the sample entries shown in Table \ref{table:sample_neighbours_view}, we can see that there are three different routes serving between stop 10002 and 11469. When calculating the average travel time between these two stops at a given hour, we used all bus trip information for these three routes.
+\par In order to find out the average travel time between any pair of neighbouring stops, we needed a list of all the neighbouring stops serving by various routes for reference. We extracted this information from the bus routes data using a simple Python script shown below. We then imported the \acrshort{csv}s into the \texttt{delay\_neighbours} table (Table \ref{table:delay_neighbours}).
+
+\begin{verbatim}
+with open('generated/neighbouring.csv', 'w') as out:
+    writer = csv.writer(out)
+    writer.writerow(['route', 'start_stop_code_lbsl',
+                     'end_stop_code_lbsl'])
+    for entry in data.values():
+        # Sort the bus sequences by route, run, and sequence
+        seq = sorted(entry.items(), key=lambda x: x[0])
+
+        # Zip the sequence with itself by 1 position off to
+        # obtain neighbouring pairs in tuple form
+        for current, nxt in zip(seq, seq[1:]):
+            writer.writerow([current[1]['Route'],
+                            current[1]['Stop_Code_LBSL'],
+                            nxt[1]['Stop_Code_LBSL']])
+\end{verbatim}
+
+\par In the sample entries shown in Table \ref{table:sample_neighbours_view}, we can see that there are three different routes serving between stop 10002 and 11469. When calculating the average travel time between these two stops at a given hour, we used all bus trip information for these three routes.
 
 \begin{table}
 \centering
@@ -62,21 +113,69 @@ id & route & start\_stop & end\_stop \\ \midrule
 \end{table}
 
 \subsection{Generating the Current Average Travel Time Between Neighbouring Stops}
-\par To generate the current average travel time, we first isolated the arrival times collected in the recent one hour.
+\par To generate the current average travel time, we first isolated the arrival times collected in the recent one hour. The SQL statement is shown below.
 
-\par We then performed the following steps on the recent arrivals data:
+\begin{verbatim}
+TRUNCATE arrivals_last_hour;
+
+INSERT INTO arrivals_last_hour
+SELECT *
+FROM delay_arrivals
+WHERE recorded_time >= DATE_SUB(NOW(),INTERVAL 1 HOUR);
+\end{verbatim}
+
+\par We then performed the following steps on the last 1 hour arrivals data:
 
 \begin{enumerate}
   \item For each bus traveling between each pair of the neighbouring bus stop,
   \begin{enumerate}
     \item Find out the arrival times for the same bus at the start stop and the end stop of the neighbouring pair.
-    \item Calculate the difference of these two arrival times, and save it as one entry of the travel time.
+    \item Calculate the difference of these two arrival times, and save it as one entry of the travel time. See SQL statement below.
   \end{enumerate}
-  \item Compute the the average travel time of all bus trips took place between every pair of neighbouring stops, and save it in the current timetable.
+\begin{verbatim}
+TRUNCATE current_travel_time_log;
+
+INSERT INTO current_travel_time_log
+SELECT t1.stop_code_lbsl start_stop,
+       t2.stop_code_lbsl end_stop,
+       t1.route route,
+       t1.trip_id trip_id,
+       t1.vehicle_id vehicle_id,
+       t1.arrival_time start_time,
+       t2.arrival_time end_time,
+       TIME_TO_SEC(TIMEDIFF(t2.arrival_time,
+                            t1.arrival_time)) travel_time,
+       t2.arrival_date `date`,
+       DAYNAME(t2.arrival_time) day,
+       HOUR(t2.arrival_time) hour
+FROM delay_neighbours AS neighbours
+INNER JOIN arrivals_last_hour AS t1
+  ON t1.stop_code_lbsl = neighbours.start_stop
+  AND t1.route = neighbours.route
+INNER JOIN arrivals_last_hour AS t2
+  ON t2.stop_code_lbsl = neighbours.end_stop
+  AND t2.route = neighbours.route
+  AND t1.trip_id = t2.trip_id
+  AND t1.vehicle_id = t2.vehicle_id;
+\end{verbatim}
+  \item Compute the average travel time of all bus trips took place between every pair of neighbouring stops, and save it in the current timetable.
+
+\begin{verbatim}
+TRUNCATE delay_current_timetable_new;
+
+INSERT INTO delay_current_timetable_new
+(start_stop, end_stop, average_travel_time, `date`, day, hour)
+SELECT start_stop, end_stop,
+       TRUNCATE(AVG(travel_time), 1) average_travel_time,
+       `date`, day, hour
+FROM current_travel_time_log
+GROUP BY start_stop, end_stop;
+\end{verbatim}
+
   \item Save the current day of week, and hour of the day in the timetable for reference.
 \end {enumerate}
 
-\par We ran the above steps every hour to refresh the current timetable. Before every update, we stored the current timetable into a log for generating the historical timetable.
+\par We ran the above steps every hour to refresh the \texttt{delay\_current\_timetable} (Schema in Table \ref{table:delay_current_timetable}) . Before every update, we stored the current timetable into \texttt{delay\_current\_timetable\_log} table for generating the historical timetable.
 
 
 % \subsection{Negative Travel Time Filter}

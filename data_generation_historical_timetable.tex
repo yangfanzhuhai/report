@@ -1,7 +1,28 @@
 %!TEX root = report.tex
 \section{Generating Historical Timetable}
 \label{sec:historical_timetable}
-\par The historical timetable is generated from the current timetables. We processed the current timetable log by computing the average bus travel time by the start stop, end stop, day of the week, and hour of the day. This computation is performed weekly on Sunday midnight to update the historical timetable.
+\par The historical timetable is generated from the current timetables. We processed the current timetable log by computing the average bus travel time by the start stop, end stop, day of the week, and hour of the day. This computation is performed weekly on Sunday midnight when the server is less busy to update the \texttt{delay\_historical\_timetable}. The following SQL script details the update task.
+
+\begin{verbatim}
+TRUNCATE delay_timetable_updated;
+
+INSERT INTO delay_timetable_updated
+(start_stop, end_stop, day, hour, average_travel_time)
+(
+  SELECT start_stop, end_stop, day, hour,
+         AVG(average_travel_time) AS average_travel_time
+  FROM delay_current_timetable_log
+  GROUP BY start_stop, end_stop, day, hour
+);
+
+INSERT INTO delay_timetable
+(start_stop, end_stop, day, hour, average_travel_time)
+SELECT start_stop, end_stop, day, hour, average_travel_time
+FROM delay_timetable_updated
+ON DUPLICATE KEY UPDATE
+delay_timetable.average_travel_time =
+delay_timetable_updated.average_travel_time;
+\end{verbatim}
 
 
 \section{Summary}
