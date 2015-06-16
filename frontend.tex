@@ -1,5 +1,5 @@
 %!TEX root = report.tex
-\chapter{WebApp for Active Delay Warning}
+\chapter{Web App for Active Delay Warning}
 \label{ch:mobile_app}
 
 \par We designed a web application to demonstrate the potential use of our API data service. It allows users to search for nearby bus stops, view the available routes and live bus arrival times. For each route, the user can view the historical, current and reference bus travel time to reach each downstream bus stop.
@@ -9,9 +9,9 @@
 \par We chose to use the AngularJS Framework \cite{angularjs} with UI Bootstrap \cite{bootstrap} to build the front-end of the application. This was because AngularJS employs a clear Model-View-Controller structure, and has a wide range of packages to build extensions with. We used \texttt{Google Maps API} \cite{angular_google_maps} and \texttt{ui-router} \cite{ui_router} extensively.
 
 \subsection{Development \& Deployment Pipeline}
-\par We used Yeoman \cite{yeoman}, a web application scaffolding tool, to organise and manage scripts and files. We also used Grunt \cite{grunt}, a Javascript task runner to manage the build and deployment process.
+\par We used Yeoman \cite{yeoman}, a web application scaffolding tool, to organise and manage scripts and files. We also used Grunt \cite{grunt}, a JavaScript task runner to manage the build and deployment process.
 
-\par For deployment, we created a Grunt task to run tests, minify the javascript files, and copy the minified version to the production server.
+\par For deployment, we created a Grunt task to run tests, minify the JavaScript files, and copy the minified version to the production server.
 
 \section{Front-end User Guide}
 \par The web application has a simple user interface. It divides the screen space into 2 parts, the top half consists of a map area, and the bottom half an information panel. We deployed the front-end web to \url{http://delay.doc.ic.ac.uk/}.
@@ -21,7 +21,7 @@
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/landing_page.png}
-\caption{\label{fig:landing_page} Web Application Langding Page}
+\caption{\label{fig:landing_page} Web Application Landing Page}
 \end{figure}
 
 \par On load, the app will attempt to obtain the current location of the device, and centre the map on it. If the current location is not available, then the default map centred on London will be loaded (Figure \ref{fig:landing_page}).

@@ -7,13 +7,8 @@
 \par Currently, only one server is used for data collection, timetable generation, and live \acrshort{api} query handling. This could be the cause of the long response time. The performance of the API endpoints could be improved by using at least two servers, one in charge of data collection and processing, and the other handle live user queries. When the user base grow in the future, we could also setup more servers to process the requests concurrently.
 
 \item \textbf{Prediction Accuracy}
-\par The accuracy of the bus journey time predictions could be further tested and improved by applying more advanced analytical methods. These include but not limit to the approaches presented in the literature review (Section \ref{sec:literature}).
-% refactor
-% into separate components
-% make it less tightly coupled
-% data collection \& pre-processing
-% server handling live user queries
+\par The accuracy of the bus journey time predictions could be further tested and improved by applying more advanced analytical methods. These include but not limit to the approaches presented in the literature review (Section \ref{sec:literature}). Special attention should be paid to improving the accuracy of the Current Timetable for different bus journey length.
 
-\item \textbf{WebApp Extensions}
-\par We could inclue features to alert users of bus delays actively for extension. The application should track the device location, and alert users of any delays occurred on the frequently travelled routes. The user interface could be furture improve the make the experience smoother. For example, a blue dot could be added to the map to indicate the current location of the device, and be updated constantly. Additionally, bus journey planning and the ability to search start and end stops are also helpful.
+\item \textbf{Web App Extensions}
+\par Features to alert users of bus delays actively for extension can be included. The application should track the device location, and alert users of any delays occurred on the frequently travelled routes. The user interface could be future improve the make the experience smoother. For example, a blue dot could be added to the map to indicate the current location of the device, and be updated constantly. Additionally, bus journey planning and the ability to search start and end stops are also helpful.
 \end{enumerate}

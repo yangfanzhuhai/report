@@ -12,32 +12,32 @@ The above computation was performed on each XML file to generate the actual arri
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/xml_linename.png}
-\caption{\label{fig:xml_linename} TfL Journey Planner Timtables XML LineName}
+\caption{\label{fig:xml_linename} TfL Journey Planner Timetables XML LineName}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/xml_vehicle_journeys.png}
-\caption{\label{fig:xml_vehicle_journeys} TfL Journey Planner Timtables XML VehicleJourney}
+\caption{\label{fig:xml_vehicle_journeys} TfL Journey Planner Timetables XML VehicleJourney}
 \end{figure}
 
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/xml_journeypattern.png}
-\caption{\label{fig:xml_journeypattern} TfL Journey Planner Timtables XML JourneyPattern}
+\caption{\label{fig:xml_journeypattern} TfL Journey Planner Timetables XML JourneyPattern}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/xml_journey_pattern_section.png}
-\caption{\label{fig:xml_journey_pattern_section} TfL Journey Planner Timtables XML JourneyPatternSection}
+\caption{\label{fig:xml_journey_pattern_section} TfL Journey Planner Timetables XML JourneyPatternSection}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/xml_stoppoint.png}
-\caption{\label{fig:xml_stoppoint} TfL Journey Planner Timtables XML StopPoint}
+\caption{\label{fig:xml_stoppoint} TfL Journey Planner Timetables XML StopPoint}
 \end{figure}
 
 \begin{enumerate}
@@ -69,11 +69,11 @@ The above computation was performed on each XML file to generate the actual arri
         \item \texttt{RunTime}, \textit{31 seconds}.
       \end{enumerate}
     \end{enumerate}
-    \item Each \texttt{StopPointRef} maps to a \texttt{StopPoints} $\rightarrow$ \texttt{StopPoint} $\rightarrow$ \texttt{AtcoCode} element. Each \texttt{StopPoint} element contains the stop name in its \texttt{Descriptior} element (Figure \ref{fig:xml_stoppoint}).
+    \item Each \texttt{StopPointRef} maps to a \texttt{StopPoints} $\rightarrow$ \texttt{StopPoint} $\rightarrow$ \texttt{AtcoCode} element. Each \texttt{StopPoint} element contains the stop name in its \texttt{Descriptor} element (Figure \ref{fig:xml_stoppoint}).
 
     For each \texttt{StopPointRef} obtained in step 4(b), retrieve the corresponding stop name as such:
     \begin{enumerate}
-      \item Go through every \texttt{StopPoint} to build a map from \texttt{AtcoCode} to \texttt{Descriptior}.
+      \item Go through every \texttt{StopPoint} to build a map from \texttt{AtcoCode} to \texttt{Descriptor}.
       \item Consult the above mapping to retrieve the stop name for each \texttt{StopPointRef} found in step 4(b), \textit{William Ellis School}.
     \end{enumerate}
 
@@ -93,7 +93,7 @@ ORDER BY sequence, departure_time_from_origin
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/tfl_timetable_archive_sample.png}
-\caption{\label{fig:tfl_timetable_archive_sample} TfL Timtables Archive Sample}
+\caption{\label{fig:tfl_timetable_archive_sample} TfL Timetables Archive Sample}
 \end{figure}
 
     \item As the \texttt{delay\_tfl\_timetable\_archive} table has more than 12 million entries, it was slow to run queries on it. Response time could go up to more than 20 seconds. In order to improve query performance, we further grouped the entries by \texttt{arrival\_hour}, and computed the average bus travel time between every pair of the neighbouring stops for the given hour of the given day of the week. This data was stored in the \texttt{delay\_tfl\_timetable} table (Schema shown in Table \ref{table:delay_tfl_timetable}) by running the following SQL statement. The resulting table has about 2.8 million entries and a query response time of about 5 seconds.
@@ -113,7 +113,7 @@ naptan_atco, average_travel_time, arrival_hour)
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/delay_tfl_timetable_sample.png}
-\caption{\label{fig:tfl_timetable_sample} TfL Timtables Sample}
+\caption{\label{fig:tfl_timetable_sample} TfL Timetables Sample}
 \end{figure}
 
 \end{enumerate}

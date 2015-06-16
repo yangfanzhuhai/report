@@ -12,21 +12,21 @@
 
 \begin{itemize}
   \item We took a snapshot of all the bus arrivals predictions for the next 30 minutes at a given recorded time (2015-06-04 11:24:37).
-  \item We grouped these prediciton entries by the difference between the predicted arrival time and the recorded time at a 5-minute interval. For example, the predictions for the buses arriving in the next 5 minutes, next 5 to 10 minutes, and next 10 to 15 minutes, etc. We added an additional group for the next 0 - 3 minutes for reference.
+  \item We grouped these prediction entries by the difference between the predicted arrival time and the recorded time at a 5-minute interval. For example, the predictions for the buses arriving in the next 5 minutes, next 5 to 10 minutes, and next 10 to 15 minutes, etc. We added an additional group for the next 0 - 3 minutes for reference.
   \item After 3 hours, we compared each arrival prediction entry in the snapshot table against the actual arrival data we stored for generating the current timetable. The difference between the predicted and the actual arrival time gives an indication of the prediction accuracy. We stored this difference as the delta value. A negative delta indicates the bus came later than the predicted time.
-  \item We calcuated the mean delta for each group, and created Table \ref{table:countdown_evaluation}.
+  \item We calculated the mean delta for each group, and created Table \ref{table:countdown_evaluation}.
 \end{itemize}
 
 \begin{table}
 \centering
 \begin{tabular}{@{}lr@{}} \toprule
 TfL Live Bus Arrivals for & Mean Delta (Seconds) \\ \midrule
-next 0 - 3 mintues & -34.8112 \\
-next 0 - 5 mintues & -45.4951 \\
-next 5 - 10 mintues & -97.2584 \\
-next 10 - 15 mintues & -134.3606 \\
-next 15 - 20 mintues & -169.5990 \\
-next 20 - 25 mintues & -174.7177 \\
+next 0 - 3 minutes & -34.8112 \\
+next 0 - 5 minutes & -45.4951 \\
+next 5 - 10 minutes & -97.2584 \\
+next 10 - 15 minutes & -134.3606 \\
+next 15 - 20 minutes & -169.5990 \\
+next 20 - 25 minutes & -174.7177 \\
 next 25 - 30 minutes & -166.1368 \\
 \bottomrule
 \end{tabular}
@@ -35,7 +35,7 @@ next 25 - 30 minutes & -166.1368 \\
 \end{table}
 
 \subsection{Test Result}
-\par Table \ref{table:countdown_evaluation} shows that buses usually came later than the predictions provided by the TfL Live Bus Arrivals API. For the buses that were predicted to arrive in the next 5 minutes, they usually came less than one minute later than the predicted arrival time. The distribution of the difference between the \acrshort{tfl} Live Bus Arrivals API and the actual bus arrival times is shown in Figure \ref{fig:countdown}. We can see that the predictions for the next 5 mintes have smaller errors compared to the restas the peak is much higher near zero errors. We took this finding into consideration when testing the accuracy of our current and historical timetable by only choosing buses that are due within the next 5 minutes as tracking targets.
+\par Table \ref{table:countdown_evaluation} shows that buses usually came later than the predictions provided by the TfL Live Bus Arrivals API. For the buses that were predicted to arrive in the next 5 minutes, they usually came less than one minute later than the predicted arrival time. The distribution of the difference between the \acrshort{tfl} Live Bus Arrivals API and the actual bus arrival times is shown in Figure \ref{fig:countdown}. We can see that the predictions for the next 5 minutes have smaller errors compared to the rest as the peak is much higher near zero errors. We took this finding into consideration when testing the accuracy of our current and historical timetable by only choosing buses that are due within the next 5 minutes as tracking targets.
 
 \begin{figure}
 \centering
@@ -56,7 +56,7 @@ next 25 - 30 minutes & -166.1368 \\
 \subsection{Test for Correctness}
 \par We first tested for the correctness of our API endpoints. This involves firing requests with random day of the week and hour of day, route, run, and starting bus stop code to check whether the server can return a response correctly.
 
-\par At this stage, we found some specific URLs that resulted in a 500 error code, and debugged the backend code to return correct results. For example, this happened when we requested for a reference travel time for a bus route at an hour out of its operating time. As there was no corresponding entry in the databases, we fixed the code by returning an empty list by default.
+\par At this stage, we found some specific URLs that resulted in a 500 error code, and debugged the back-end code to return correct results. For example, this happened when we requested for a reference travel time for a bus route at an hour out of its operating time. As there was no corresponding entry in the databases, we fixed the code by returning an empty list by default.
 
 \par After we received 200 status code for all requests in a few test runs consistently, we proceeded to perform the load tests by fixing the day of the week and hour of the day to be the current values when the test was run.
 
@@ -70,7 +70,7 @@ next 25 - 30 minutes & -166.1368 \\
 
   \item \texttt{Successful transactions} is the number of times the server returned a code less than 400. Accordingly, redirects are considered successful transactions.
 
-  \item \texttt{Avalability} is the percentage of successful transactions over the total number of server hits.
+  \item \texttt{Availability} is the percentage of successful transactions over the total number of server hits.
 \end{itemize}
 
 
@@ -78,7 +78,7 @@ next 25 - 30 minutes & -166.1368 \\
 
 \par Figure \ref{fig:siege_pre_api_availability} shows that the \texttt{availability} drops below 100\% when there were more than 100 users accessing the API simultaneously. We used this as a benchmark for the number of uses the current server can reliably handle. Figure \ref{fig:siege_pre_api_response_time} shows that the average \texttt{response time} for 100 users is approximately 15 seconds, and increases as the number of users increases. Figure \ref{fig:siege_pre_api_transfer_rate} shows that the \texttt{transaction rate} for 100 users is about 5.5 transactions per second.
 
-\textbf{Cause of slow response}. The slow response time was probably due to the number of databases query required to form a response. One databases query was needed for every pair of neighbouring stops in the downstream stop sequence to retrieve the timetable entry. One potential approach to reduce the number of databases query is to produce the bus journey timetables by route. In this case, only one query would be sufficient for each request. The tradeoff is that the tables will be larger as there will be multiple entries for the same pair of neighbouring stops on different routes. We discussed other potential improvement for performance in Chapter \ref{ch:future_work}.
+\textbf{Cause of slow response}. The slow response time was probably due to the number of databases query required to form a response. One databases query was needed for every pair of neighbouring stops in the downstream stop sequence to retrieve the timetable entry. One potential approach to reduce the number of databases query is to produce the bus journey timetables by route. In this case, only one query would be sufficient for each request. The trade-off is that the tables will be larger as there will be multiple entries for the same pair of neighbouring stops on different routes. We discussed other potential improvement for performance in Chapter \ref{ch:future_work}.
 
 \begin{figure}
 \centering
@@ -121,7 +121,7 @@ next 25 - 30 minutes & -166.1368 \\
 
 \section{Accuracy of Predictions}
 \label{sec:prediction_accuracy}
-\par To evaluate the accuracy of the bus journey time predictions, we ran tests to compare the actual bus travel times with the historical, current, and reference timetables respectively. We achieved this by first saving the predicted bus journey times from the two endpoints for a given vehicle. We then searched the databases for the actual arrival time records for the vehicle at each downstream stops. For each test case, we ran through the steps below:
+\par To evaluate the accuracy of the bus journey time predictions, we ran tests to compare the actual bus travel times with the historical, current, and reference timetables respectively. We achieved this by first saving the predicted bus journey times from the two endpoints for a given vehicle. We then searched the databases for the actual arrival time records for the vehicle at each downstream stops. We ran 3 tests at different hours during 15 June 2015. The test details are shown in Table \ref{table:test_details}. The following steps describe the procedure to collect the test data for one bus journey. Each bus journey consists of predictions from the starting stop to each of the downstream stop. For each test case, we collected data for multiple bus journeys.
 
 \begin{enumerate}
   \item \textbf{Saving predicted bus journey times}:
@@ -142,10 +142,107 @@ next 25 - 30 minutes & -166.1368 \\
   \end{enumerate}
 \end{enumerate}
 
-\par We collected 154 test cases throughout the day on 12 June 2015. Each test case consists of a list of travel times from the starting stop to each downstream stop. There were 3362 pair of stops in total. We ploted the probability density graph to compare the reference, historical and current bus travel times with the actual bus travel times.
-\todo[inline]{insert graph}
+\subsection{Test Results}
+\par For each test, we plotted the probability distribution of the errors between the reference, historical, current bus travel times and the actual bus travel times respectively (Figures \ref{fig:prediction_accuracy_16}, \ref{fig:prediction_accuracy_19}, \ref{fig:prediction_accuracy_23}). Additionally, we grouped the predictions by the length of the predicted bus journey time, and calculated the mean error for each group (Table \ref{table:test1_mean_error}, \ref{table:test2_mean_error}, \ref{table:test3_mean_error}). We observed the followings from the results:
 
-\par We found that the individual predictions do not give satisfactory accuracy.
+\begin{enumerate}
+  \item The Historical Timetable curve has the highest peak value near to 0 error in all three cases. This shows that the Historical Timetable predictions are more likely to be accurate than the rest two.
+  \item We observed that the Current Timetable error curve consistently positioned slightly to the positive direction compared to the rest two curves. This shows that the Current Timetable tends to slightly over-predict the travel time compared to Historical Timetable and Tfl Reference Timetable. This was especially obvious in Figure \ref{fig:prediction_accuracy_19} which was captured near peak hours (7.19pm). We need to run more tests to evaluate this aspect to find out the reason.
+  \item The scale of the vertical axis goings higher for tests ran later in the evenings. This indicates that, in general, the probability of having a smaller error is higher later in the evenings for all three timetables. They tend to produce more accurate predictions later in the evening compared to late afternoon. This may be because there is less traffic near midnight, and therefore there is less variation in bus travel times in the recent one hour.
+  \item Table \ref{table:test1_mean_error} shows that at 4.47pm on the test date, the Current Timetable gives predictions with smaller mean errors for bus journey times ranging between 15 and 50 minutes, while the TfL Reference Timetable produces more accurate predictions for shorter bus trips. In comparison, the TfL Reference Timetable has better prediction results in Test 2 (Table \ref{table:test2_mean_error}) and for longer trips in Test 3 (Table \ref{table:test3_mean_error}).
+\end{enumerate}
+
+\begin{table}
+\centering
+\begin{tabular}{@{}llrr@{}} \toprule
+Test No. & Time & No. of Bus Journey Recorded & No. of Predictions\\ \midrule
+1 & 2015-06-15 16:47:23 & 45 & 840 \\
+2 & 2015-06-15 19:19:04 & 82 & 1560\\
+3 & 2015-06-15 23:26:23 & 92 & 1650\\
+\bottomrule
+\end{tabular}
+\caption{Evaluation for Prediction Accuracy Test Details}
+\label{table:test_details}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/prediction_accuracy_16.png}
+\caption{\label{fig:prediction_accuracy_16} Test 1. Active Traffic Delay Predictions Error Probability Distribution}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/prediction_accuracy_19.png}
+\caption{\label{fig:prediction_accuracy_19} Test 2. Active Traffic Delay Predictions Error Probability Distribution}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/prediction_accuracy_23.png}
+\caption{\label{fig:prediction_accuracy_23} Test 3. Active Traffic Delay Predictions Error Probability Distribution}
+\end{figure}
+
+\begin{table}
+\centering
+\begin{tabular}{@{}llrr@{}} \toprule
+ Predicted Bus Travel Time Length & Historical & Current & TfL Reference \\  \midrule
+0 to 5 minutes   &   -43.1    &  -48.9  &     -14.9     \\
+5 to 10 minutes  &   -72.6    &  -69.1  &     -23.6     \\
+10 to 15 minutes &   -100.3   &  -95.3  &     -86.4     \\
+15 to 20 minutes &   -117.5   &  -70.3  &     -143.5    \\
+20 to 25 minutes &   -69.4    &   -3.4  &     -119.8    \\
+25 to 30 minutes &   -102.6   &  -42.7  &     -160.3    \\
+30 to 40 minutes &   -144.9   &  -38.5  &     -181.2    \\
+40 to 50 minutes &   -183.3   &   29.0  &     -251.1    \\
+50 to 60 minutes &   -790.2   &  -885.9 &     -837.4    \\
+60 to 70 minutes &   -994.5   &  -520.9 &    -1212.3    \\
+\bottomrule
+\end{tabular}
+\caption{Test 1. Mean Error for Active Traffic Delay Predictions (s)}
+\label{table:test1_mean_error}
+\end{table}
 
 
+\begin{table}
+\centering
+\begin{tabular}{@{}llrr@{}} \toprule
+ Predicted Bus Travel Time Length      & Historical & Current & TfL Reference \\ \midrule
+0 to 5 minutes   &   -25.8    &   -6.7  &     -11.1     \\
+5 to 10 minutes  &   -42.8    &   39.1  &     -11.2     \\
+10 to 15 minutes &   -46.4    &   90.7  &     -20.6     \\
+15 to 20 minutes &   -69.7    &  143.7  &     -34.5     \\
+20 to 25 minutes &   -74.4    &  214.0  &     -40.4     \\
+25 to 30 minutes &   -78.6    &  272.5  &     -25.5     \\
+30 to 40 minutes &   -75.8    &  342.6  &     -35.1     \\
+40 to 50 minutes &   -92.4    &  487.5  &     -34.0     \\
+50 to 60 minutes &   -179.0   &  850.4  &     -106.8    \\
+60 to 70 minutes &   -178.6   &  1111.9 &     -81.5     \\
+\bottomrule
+\end{tabular}
+\caption{Test 2. Mean Error for Active Traffic Delay Predictions (s)}
+\label{table:test2_mean_error}
+\end{table}
 
+\begin{table}
+\centering
+\begin{tabular}{@{}llrr@{}} \toprule
+ Predicted Bus Travel Time Length   & Historical & Current & TfL Reference \\ \midrule
+0 to 5 minutes   &   -29.2    &  -16.2  &     -14.5  \\
+5 to 10 minutes  &   -32.1    &   20.0  &      -8.0  \\
+10 to 15 minutes &   -54.9    &   36.2  &     -18.8  \\
+15 to 20 minutes &   -44.4    &   82.5  &      3.6   \\
+20 to 25 minutes &   -53.7    &   93.2  &      29.5  \\
+25 to 30 minutes &   -89.5    &  116.4  &      -6.6  \\
+30 to 40 minutes &   -113.1   &  148.4  &      15.1  \\
+40 to 50 minutes &   -113.2   &  167.0  &     -101.2 \\
+50 to 60 minutes &   -58.4    &  343.9  &     -41.6  \\
+\bottomrule
+\end{tabular}
+\caption{Test 3. Mean Error for Active Traffic Delay Predictions (s).
+This test set does not contain predictions for the next 60 to 70 minutes.}
+\label{table:test3_mean_error}
+\end{table}
+
+\subsection{Summary}
+\par In summary, the predictions we produced show great potential. This is because a) the Historical Timetable consistently produce accurate predictions more frequently than the TfL Reference Timetable, b) the Current Timetable at times produce predictions with much smaller mean error, and tends to be able to capture bus delay with positive mean errors more than the TfL Reference Timetable. To make better use of the predictions, more tests could be run to learn the pattern of the timetables' accuracy, and fine-tune the accuracy of the Current timetables at different times of the day.

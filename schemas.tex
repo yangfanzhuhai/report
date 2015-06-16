@@ -1,13 +1,28 @@
 %!TEX root = report.tex
 \begin{appendices}
 \chapter{Database Table Schema}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lll@{}} \toprule
+Column Name & Type & Remarks\\ \midrule
+stop\_code\_lbsl(Primary) & varchar(64) & The internal bus stop identifier \\
+bus\_stop\_code & varchar(64) &  The public code for the bus stop \\
+naptan\_atco & varchar(64) & The national identifier of the bus stop \\
+stop\_name & varchar(64) & The name of the bus stop \\
+\bottomrule
+\end{tabular}
+\caption{delay\_stops Table Schema}
+\label{table:delay_stops}
+\end{table}
+
 \begin{table}[h]
 \centering
 \begin{tabular}{@{}lll@{}} \toprule
 Column Name & Type & Foreign Key\\ \midrule
 id(Primary) & int(11)  \\
-stop\_code\_lbsl & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl \\
-route & varchar(64) & delay\_bus\_sequences.route \\
+stop\_code\_lbsl & varchar(64) & delay\_stops.stop\_code\_lbsl \\
+route & varchar(64) &  \\
 vehicle\_id & varchar(64) & \\
 trip\_id & varchar(64) & \\
 arrival\_date & date &  \\
@@ -21,16 +36,15 @@ recorded\_time & timestamp & \\ \bottomrule
 
 \begin{table}
 \centering
-\begin{tabular}{@{}llr@{}} \toprule
-Column Name & Type & Comments\\ \midrule
-id(Primary Key) & int(11)  & Auto Increment\\
+\begin{tabular}{@{}lll@{}} \toprule
+Column Name & Type & Foreign Key / Remarks\\ \midrule
 route & varchar(64) &  The route name\\
 run & int(11) & The route direction\\
 sequence & int(11) & The sequence of the bus stop in the route\\
-stop\_code\_lbsl & varchar(64) & The internal bus stop identifier\\
-bus\_stop\_code & varcher(64) & The public code for the bus stop\\
-naptan\_atco & varchar(64) & The national identifier of the bus stop\\
-stop\_name & varchar(64) & The name of the bus stop\\ \bottomrule
+stop\_code\_lbsl & varchar(64) & delay\_stops.stop\_code\_lbsl \\
+bus\_stop\_code & varchar(64) & delay\_stops.bus\_stop\_code\\
+naptan\_atco & varchar(64) & delay\_stops.naptan\_atco \\
+stop\_name & varchar(64) & delay\_stops.stop\_name\\ \bottomrule
 \end{tabular}
 \caption{delay\_bus\_sequences Table Schema}
 \label{table:delay_bus_sequences}
@@ -42,9 +56,9 @@ stop\_name & varchar(64) & The name of the bus stop\\ \bottomrule
 \begin{tabular}{@{}lll@{}} \toprule
 Column Name & Type & Foreign Key\\ \midrule
 id(Primary Key) & int(11)  \\
-route & varchar(64) & delay\_bus\_sequences.route \\
-start\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
-end\_stop & varcher(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
+route & varchar(64) &  \\
+start\_stop & varchar(64) & delay\_stops.stop\_code\_lbsl\\
+end\_stop & varchar(64) & delay\_stops.stop\_code\_lbsl\\
 \bottomrule
 \end{tabular}
 \caption{delay\_neighbours Table Schema}
@@ -56,8 +70,8 @@ end\_stop & varcher(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
 \begin{tabular}{@{}lll@{}} \toprule
 Column Name & Type & Foreign Key\\ \midrule
 id(Primary Key) & int(11)  \\
-start\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
-end\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
+start\_stop & varchar(64) & delay\_stops.stop\_code\_lbsl\\
+end\_stop & varchar(64) & delay\_stops.stop\_code\_lbsl\\
 date & DATE \\
 day & varchar(64) \\
 hour & varchar(64) \\
@@ -72,13 +86,13 @@ average\_travel\_time & Decimal \\ \bottomrule
 \begin{tabular}{@{}lll@{}} \toprule
 Column Name & Type & Foreign Key\\ \midrule
 id(Primary Key) & int(11)  \\
-start\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
-end\_stop & varchar(64) & delay\_bus\_sequences.stop\_code\_lbsl\\
+start\_stop & varchar(64) & delay\_stops.stop\_code\_lbsl\\
+end\_stop & varchar(64) & delay\_stops.stop\_code\_lbsl\\
 day & varchar(64) \\
 hour & varchar(64) \\
 average\_travel\_time & Decimal \\ \bottomrule
 \end{tabular}
-\caption{delay\_historial\_timetable Table Schema}
+\caption{delay\_historical\_timetable Table Schema}
 \label{table:delay_historical_timetable}
 \end{table}
 
@@ -93,8 +107,8 @@ route & varchar(64) & delay\_bus\_sequences. route \\ [0.4cm]
 day & varchar(32) & & The day of week for the vehicle journey \\ [0.4cm]
 run & int(11) & delay\_bus\_sequences.run \\ [0.4cm]
 sequence & int (11) & delay\_bus\_sequences. sequence \\ [0.4cm]
-stop\_name & varchar(64) & delay\_bus\_sequences. stop\_name \\ [0.4cm]
-naptan\_atco & varchar(64) & delay\_bus\_sequences. naptan\_atco \\ [0.4cm]
+stop\_name & varchar(64) &  \\ [0.4cm]
+naptan\_atco & varchar(64) & delay\_stops.naptan\_atco \\ [0.4cm]
 average\_travel\_time & datetime(6) & & The average travel time in seconds for the bus trips from the previous stop in the route to the current stop during the given arrival hour \\ [0.4cm]
 cumulative\_travel\_time & int(11) & & The average travel time in seconds from the terminal to the current stop for the bus trips arrived at the current stop in the given arrival hour \\
 \bottomrule

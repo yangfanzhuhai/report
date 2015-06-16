@@ -7,10 +7,10 @@
 \par The base URL to access the reference timetable is \url{http://delay.doc.ic.ac.uk:5000/tfl_timetable/?}.The required parameters are the same for the predictions endpoint, described in Section \ref{sec:predictions_params}. For example, the URL to retrieve reference timetable entries for route 360 for downstream stops starting with \gls{naptan} code 490016263E at hour 15 on Tuesday is \url{http://delay.doc.ic.ac.uk:5000/tfl_timetable/?day=Tuesday&hour=15&route=360&run=2&naptan_atco=490016263E}.
 
 \subsubsection{Result Format}
-\par The result of this API query is similar to that of the prediction endpoint. It consists of a JSON list of bus stops, ordered by the given route sequences. Each bus stop entry contains information on the bus stop. Additionally, the \texttt{average\_travel\_time} field indicates the official bus travel time from the previous stop to the current stop in seconds, whereas the \texttt{cumulative\_travel\_time} field shows the official bus travel time from the givien starting stop to the current stop in seconds.
+\par The result of this API query is similar to that of the prediction endpoint. It consists of a JSON list of bus stops, ordered by the given route sequences. Each bus stop entry contains information on the bus stop. Additionally, the \texttt{average\_travel\_time} field indicates the official bus travel time from the previous stop to the current stop in seconds, whereas the \texttt{cumulative\_travel\_time} field shows the official bus travel time from the given starting stop to the current stop in seconds.
 
-\subsubsection{Backend Computation}
-The backend processes each request as such:
+\subsubsection{Back-end Computation}
+The back-end processes each request as such:
 
 \begin{itemize}
   \item Search the \acrshort{tfl} timetable in databases for the entries for the given route, run and arrival hour.

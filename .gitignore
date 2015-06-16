@@ -27,3 +27,5 @@ do
 *.sh
 figures/backup/
 *.txt
+
+*.bak

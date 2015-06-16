@@ -77,7 +77,7 @@ def insert_arrivals_to_db(conn, arrival):
 
 \subsection{Generating Bus Sequences and Neighbouring Stops}
 \label{sec:bus_stop_locations_routes}
-\par We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the \texttt{delay\_bus\_sequences} table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route. As the sequence information for some routes have gaps, we preprocessed the data by updating the sequence number of the following stops to fill up the gaps. This preprocessing step was done after a few examples verified with the up-to-date TfL routes in the TfL Journey Planner.
+\par We stored the distinct bus stops in Table \texttt{delay\_stops} (Schema in Table \ref{table:delay_stops}). We imported the bus routes data introduced in Section \ref{sec:bus_sequence} into the \texttt{delay\_bus\_sequences} table (Table \ref{table:delay_bus_sequences}). Every entry contains information on the route name, route direction, and the sequences of stops in the route. As the sequence information for some routes have gaps, we preprocessed the data by updating the sequence number of the following stops to fill up the gaps. This preprocessing step was done after a few examples verified with the up-to-date TfL routes in the TfL Journey Planner.
 
 \par In order to find out the average travel time between any pair of neighbouring stops, we needed a list of all the neighbouring stops serving by various routes for reference. We extracted this information from the bus routes data using a simple Python script shown below. We then imported the \acrshort{csv}s into the \texttt{delay\_neighbours} table (Table \ref{table:delay_neighbours}).
 
@@ -127,7 +127,7 @@ WHERE recorded_time >= DATE_SUB(NOW(),INTERVAL 1 HOUR);
 \par We then performed the following steps on the last 1 hour arrivals data:
 
 \begin{enumerate}
-  \item For each bus traveling between each pair of the neighbouring bus stop,
+  \item For each bus travelling between each pair of the neighbouring bus stop,
   \begin{enumerate}
     \item Find out the arrival times for the same bus at the start stop and the end stop of the neighbouring pair.
     \item Calculate the difference of these two arrival times, and save it as one entry of the travel time. See SQL statement below.

@@ -31,11 +31,11 @@
 
 \begin{enumerate}
   \item Collected 4 months of London bus arrival times data for each bus at each stop. Computed historical and current timetables from the collected data (Chapter \ref{ch:data_generation}).
-  \item Built a data service API to provide reference, historical, and current bus timetables for London buses (Chaper \ref{ch:data_service}). The timetables contain information on the average bus travel time for each downstream stop for a given route on a given day of the week and hour of the day.
-  \item Designed a demonstrative web applicatoin to inform users of bus delays on a given route (Chaper \ref{ch:mobile_app}).
-  \item Evaluated the accuracy of the \acrshort{tfl} Live Bus \acrshort{api} and identified that the bus arrival predictions within the future 5 minutes are on average less than 1 minute different from the acutal arrival time.
+  \item Built a data service API to provide reference, historical, and current bus timetables for London buses (Chapter \ref{ch:data_service}). The timetables contain information on the average bus travel time for each downstream stop for a given route on a given day of the week and hour of the day.
+  \item Designed a demonstrative web application to inform users of bus delays on a given route (Chapter \ref{ch:mobile_app}).
+  \item Evaluated the accuracy of the \acrshort{tfl} Live Bus \acrshort{api} and identified that the bus arrival predictions within the future 5 minutes are on average less than 1 minute different from the actual arrival time.
   \item Tested the performance of the data service \acrshort{api} endpoints and confirmed that the endpoints can serve 100 simultaneous users reliably.
-  \item Evaluated the accuracy of the reference, historical, and current timetables provided by the data service, and built a linear regression model to produce bus journey time predictions (Chaper \ref{ch:evaluation}).
+  \item Evaluated the accuracy of the reference, historical, and current timetables provided by the data service (Chapter \ref{ch:evaluation}) and found that the historical timetable has the highest probability to give accurate predictions, whereas the current timetable is able to capture bus delay more frequently than the reference timetable.
 \end{enumerate}
 
-\par We hope this project serves as a good starting point for developers to build predictive models for London bus delay, as well as useful softwares for passengers to browse the prediction timetables.
+\par We hope this project serves as a good starting point for developers to build predictive models for London bus delay, as well as useful software for passengers to browse the prediction timetables.
